@@ -1,0 +1,30 @@
+
+branches:
+  only:
+    - master
+
+language: rust
+rust:
+  - stable
+sudo: true
+
+cache:
+  directories:
+    - node/release/build
+    - node/release/deps
+    - node/release/examples
+    - node/release/incremental
+    - node/release/native
+    - dns_utility/release/build
+    - dns_utility/release/deps
+    - dns_utility/release/examples
+    - dns_utility/release/incremental
+    - dns_utility/release/native
+    - port_exposer
+    - node-ui/node_modules
+
+install:
+  - rustup component add rustfmt
+  - rustup component add clippy
+
+script: ci/all.sh && ci/multinode_integration_test.sh
