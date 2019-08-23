@@ -15,6 +15,7 @@ env:
 cache:
   directories:
     - /home/travis/.cargo/registry
+    - /home/travis/.cache/sccache
     - node/target/release/build
     - node/target/release/deps
     - node/target/release/examples
