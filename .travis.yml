@@ -1,0 +1,44 @@
+
+branches:
+  only:
+    - master
+
+language: rust
+rust:
+  - stable
+
+sudo: true
+
+env:
+  - NODE_JS_VERSION=10.6.3
+
+cache:
+  directories:
+    - /home/travis/.cargo/registry
+    - node/target/release/build
+    - node/target/release/deps
+    - node/target/release/examples
+    - node/target/release/incremental
+    - node/target/release/native
+    - dns_utility/target/release/build
+    - dns_utility/target/release/deps
+    - dns_utility/target/release/examples
+    - dns_utility/target/release/incremental
+    - dns_utility/target/release/native
+    - port_exposer
+    - node-ui/node_modules
+
+before_install:
+  - |
+    curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+    sudo apt-get install -y nodejs
+    nvm install 10.16.3
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+    sudo apt-get update && sudo apt-get install -y yarn xvfb
+
+install:
+  - rustup component add rustfmt
+  - rustup component add clippy
+
+script: xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" ci/all.sh && ci/multinode_integration_test.sh
