@@ -40,7 +40,7 @@ before_install:
 
 install:
   - rustup component add rustfmt
-  - rustup component add clippy
+#  - rustup component add clippy # Not using this in Travis CI
 
 jobs:
   include:
