@@ -41,4 +41,4 @@ install:
   - rustup component add rustfmt
   - rustup component add clippy
 
-script: ci/all.sh && ci/multinode_integration_test.sh
+script: xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" ci/all.sh && ci/multinode_integration_test.sh
