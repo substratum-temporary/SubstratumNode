@@ -3,6 +3,8 @@
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 DNS_UTILITY_PARENT_DIR="$1"
 
-"$CI_DIR/lint.sh"
-"$CI_DIR/unit_tests.sh"
-"$CI_DIR/integration_tests.sh" "$DNS_UTILITY_PARENT_DIR"
+pushd "$CI_DIR/.."
+ci/lint.sh
+ci/unit_tests.sh
+ci/integration_tests.sh "$DNS_UTILITY_PARENT_DIR"
+popd

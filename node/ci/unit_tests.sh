@@ -1,7 +1,9 @@
-#!/bin/bash -xv
+#!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
+CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 export RUST_BACKTRACE=full
 export RUSTFLAGS="-D warnings -Anon-snake-case"
-#cargo test --release -- --nocapture --skip _integration
-cargo test bootstrapper -- --nocapture --skip _integration
+pushd "$CI_DIR/.."
+cargo test --release -- --nocapture --skip _integration
+popd
