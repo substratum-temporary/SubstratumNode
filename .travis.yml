@@ -9,7 +9,6 @@ rust:
 
 sudo: true
 
-
 env:
   - NODE_JS_VERSION=10.6.3
 
