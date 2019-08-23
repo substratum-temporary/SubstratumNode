@@ -42,4 +42,36 @@ install:
   - rustup component add rustfmt
   - rustup component add clippy
 
-script: xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" ci/all.sh && ci/multinode_integration_test.sh
+jobs:
+  include:
+    - stage: "Stage 0"
+    - script: ci/prepare_build.sh
+      name: "Prepare Build"
+
+    - stage: "Stage 1"
+    - script: node/ci/build.sh
+      name: "Build SubstratumNode"
+    - script: dns_utility/ci/build.sh
+      name: "Build dns_utility"
+    - script: node-ui/ci/unit_tests.sh
+      name: "Node UI Unit Tests"
+
+    - stage: "Stage 2"
+    - script: node/ci/unit_tests.sh
+      name: "SubstratumNode Unit Tests"
+    - script: node/ci/integration_tests.sh
+      name: "SubstratumNode Zero-Hop Integration Tests"
+    - script: dns_utility/ci/unit_tests.sh
+      name: "dns_utility Unit Tests"
+    - script: dns_utility/ci/integration_tests.sh
+      name: "dns_utility Integration Tests"
+    - script: multinode_integration_tests/ci/all.sh
+      name: "Multinode Integration Tests"
+    - script: node-ui/ci/build.sh
+      name: "Node UI Build"
+
+    - stage: "Stage 3"
+    - script: node-ui/ci/ng_tests.sh
+      name: "Node UI Angular Tests"
+    - script: xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" node-ui/ci/integration_tests.sh
+      name: "Node UI Integration Tests"
