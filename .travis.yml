@@ -39,8 +39,12 @@ before_install:
     sudo apt-get update && sudo apt-get install -y yarn xvfb
 
 install:
-  - rustup component add rustfmt
-#  - rustup component add clippy # Not using this in Travis CI
+  - |
+    echo "About to add rustfmt"
+    rustup component add rustfmt
+    echo "rustfmt added; about to add clippy"
+    rustup component add clippy
+    echo "clippy added"
 
 jobs:
   include:
