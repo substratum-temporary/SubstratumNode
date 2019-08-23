@@ -14,18 +14,11 @@ env:
 
 cache:
   directories:
-    - $HOME/.cargo/registry
-    - $HOME/.cache/sccache
-    - node/target/release/build
-    - node/target/release/deps
-    - node/target/release/examples
-    - node/target/release/incremental
-    - node/target/release/native
-    - dns_utility/target/release/build
-    - dns_utility/target/release/deps
-    - dns_utility/target/release/examples
-    - dns_utility/target/release/incremental
-    - dns_utility/target/release/native
+    - $TRAVIS_HOME/.cargo/
+    - $TRAVIS_HOME/.cache/sccache/
+    - $TRAVIS_HOME/.rustup/
+    - node/target
+    - dns_utility/target
     - port_exposer
     - node-ui/node_modules
 
@@ -40,11 +33,11 @@ before_install:
 
 install:
   - |
-    echo "About to add rustfmt"
     rustup component add rustfmt
-    echo "rustfmt added; about to add clippy"
     rustup component add clippy
-    echo "clippy added"
+
+script:
+  - echo "Don't try to build in this directory!"
 
 jobs:
   include:
