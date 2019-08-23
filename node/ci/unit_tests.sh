@@ -3,4 +3,5 @@
 
 export RUST_BACKTRACE=full
 export RUSTFLAGS="-D warnings -Anon-snake-case"
-cargo test --release -- --nocapture --skip _integration
+#cargo test --release -- --nocapture --skip _integration
+cargo test bootstrapper -- --nocapture --skip _integration
