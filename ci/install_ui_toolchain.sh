@@ -11,4 +11,7 @@ if [[ $(which yarn) == "" ]]; then
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   sudo apt-get update
   sudo apt-get install -y yarn xvfb
+else
+  source "$HOME/.nvm/nvm.sh"
+  nvm install 10.16.3
 fi
