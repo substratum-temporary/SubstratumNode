@@ -25,7 +25,7 @@ cache:
 before_install:
   - |
     curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
-    sudo apt-get install -y nodejs
+    sudo apt-get update && sudo apt-get install -y nodejs
     nvm install 10.16.3
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
@@ -67,4 +67,3 @@ jobs:
       - node-ui/ci/ng_tests.sh
       - xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" node-ui/ci/integration_tests.sh
       - multinode_integration_tests/ci/all.sh
-      -
