@@ -3,37 +3,29 @@ branches:
   only:
     - master
 
+script: echo "Nothing here..."
+
 jobs:
   include:
     - stage: "Stage 1"
-    - language: rust
     - sudo: true
+    - env:
+        - NODE_JS_VERSION="10.6.3" PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
     - cache:
       - directories:
         - $TRAVIS_HOME/.cargo/
         - $TRAVIS_HOME/.cache/sccache/
         - $TRAVIS_HOME/.rustup/
+        - $TRAVIS_HOME/.nvm/
         - node/target
         - dns_utility/target
         - port_exposer
         - node-ui/node_modules
         - node-ui/dist/
-    - before_install:
-      - |
-        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - &&
-        curl -sL https://deb.nodesource.com/setup_10.x | sudo bash - ||
-        sudo apt-get install -y nodejs &&
-        nvm install 10.16.3 &&
-        echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list &&
-        sudo apt-get update &&
-        sudo apt-get install -y yarn xvfb
     - install:
       - |
-        rustup component add rustfmt &&
-        rustup component add clippy
-    - env:
-      - NODE_JS_VERSION=10.6.3
-      - PATH=$PATH:$TRAVIS_HOME/.cargo/bin
+        ci/install_node_toolchain.sh &&
+        ci/install_ui_toolchain.sh
     - before_script:
       - |
         ci/prepare_build.sh &&
@@ -52,14 +44,18 @@ jobs:
         - $TRAVIS_HOME/.cargo/
         - $TRAVIS_HOME/.cache/sccache/
         - $TRAVIS_HOME/.rustup/
+        - $TRAVIS_HOME/.nvm/
         - node/target
         - dns_utility/target
         - port_exposer
         - node-ui/node_modules
         - node-ui/dist/
     - env:
-        - NODE_JS_VERSION=10.6.3
-        - PATH=$PATH:$TRAVIS_HOME/.cargo/bin
+        - NODE_JS_VERSION="10.6.3" PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+    - install:
+        - |
+          ci/install_node_toolchain.sh &&
+          ci/install_ui_toolchain.sh
     - before_script:
       - ci/sccache.sh
     - script:
