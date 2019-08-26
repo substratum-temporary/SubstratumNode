@@ -11,13 +11,12 @@ sudo: true
 
 env:
   - NODE_JS_VERSION=10.6.3
-
-script:
-  - echo "Don't try to build in this directory!"
+  - PATH=$PATH:$TRAVIS_HOME/.cargo/bin
 
 jobs:
   include:
     - stage: "Stage 1"
+    - language: rust
     - cache:
       - directories:
         - $TRAVIS_HOME/.cargo/
@@ -35,6 +34,7 @@ jobs:
         sudo apt-get install -y nodejs &&
         nvm install 10.16.3 &&
         echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list &&
+        sudo apt-get update &&
         sudo apt-get install -y yarn xvfb
     - install:
       - |
@@ -49,7 +49,7 @@ jobs:
       - node/ci/unit_tests.sh
       - dns_utility/ci/unit_tests.sh
       - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
-      - node-ui/unit_tests.sh
+      - node-ui/ci/unit_tests.sh
       - node-ui/ci/build.sh
 
     - stage: "Stage 2"
