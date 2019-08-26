@@ -3,20 +3,13 @@ branches:
   only:
     - master
 
-#language: rust
-#rust:
-#  - stable
-
-sudo: true
-
-env:
-  - NODE_JS_VERSION=10.6.3
-  - PATH=$PATH:$TRAVIS_HOME/.cargo/bin
+install: skip
 
 jobs:
   include:
     - stage: "Stage 1"
     - language: rust
+    - sudo: true
     - cache:
       - directories:
         - $TRAVIS_HOME/.cargo/
@@ -40,6 +33,9 @@ jobs:
       - |
         rustup component add rustfmt &&
         rustup component add clippy
+    - env:
+      - NODE_JS_VERSION=10.6.3
+      - PATH=$PATH:$TRAVIS_HOME/.cargo/bin
     - before_script:
       - |
         ci/prepare_build.sh &&
@@ -63,6 +59,9 @@ jobs:
         - port_exposer
         - node-ui/node_modules
         - node-ui/dist/
+    - env:
+        - NODE_JS_VERSION=10.6.3
+        - PATH=$PATH:$TRAVIS_HOME/.cargo/bin
     - before_script:
       - ci/sccache.sh
     - script:
