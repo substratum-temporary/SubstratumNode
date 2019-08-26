@@ -30,12 +30,10 @@ before_install:
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
     sudo apt-get update && sudo apt-get install -y yarn xvfb
-
 install:
   - |
     rustup component add rustfmt
     rustup component add clippy
-
 script:
   - echo "Don't try to build in this directory!"
 
@@ -58,11 +56,13 @@ jobs:
     - cache:
         - directories:
             - node-ui/dist/
-    - before_script: |
-      which sccache || cargo install sccache || echo "Skipping sccache installation"
-      sccache --start-server || echo "sccache server already running"
-      export RUSTC_WRAPPER=sccache
+    - before_script:
+      - |
+        which sccache || cargo install sccache || echo "Skipping sccache installation"
+        sccache --start-server || echo "sccache server already running"
+        export RUSTC_WRAPPER=sccache
     - script:
       - node-ui/ci/ng_tests.sh
       - xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" node-ui/ci/integration_tests.sh
       - multinode_integration_tests/ci/all.sh
+      -
