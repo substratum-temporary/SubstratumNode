@@ -22,14 +22,10 @@ jobs:
         - port_exposer
         - node-ui/node_modules
         - node-ui/dist/
-    - install:
-      - |
-        ci/install_node_toolchain.sh &&
-        ci/install_ui_toolchain.sh
     - before_script:
       - |
-        echo PATH so far: "$PATH" &&
-        ls -l "$TRAVIS_HOME/.cargo/bin" &&
+        ci/install_node_toolchain.sh &&
+        ci/install_ui_toolchain.sh &&
         ci/prepare_build.sh &&
         node/ci/build.sh &&
         dns_utility/ci/build.sh
