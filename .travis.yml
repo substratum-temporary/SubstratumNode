@@ -3,8 +3,6 @@ branches:
   only:
     - master
 
-install: skip
-
 jobs:
   include:
     - stage: "Stage 1"
