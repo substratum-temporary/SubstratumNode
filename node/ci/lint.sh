@@ -1,4 +1,4 @@
-#!/bin/bash -xv
+#!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
@@ -7,6 +7,7 @@ if [[ "$TRAVIS" == "true" ]]; then
   exit 0
 fi
 
+pushd "$CI_DIR/.."
 # So far, allowed lints are tech debt to be addressed later.
 # They are ordered roughly by number of occurrences descending.
 cargo clippy -- -D warnings -Anon-snake-case \
@@ -19,3 +20,4 @@ cargo clippy -- -D warnings -Anon-snake-case \
     -A clippy::clone_double_ref \
     -A clippy::derive_hash_xor_eq \
     -A clippy::cognitive_complexity
+popd
