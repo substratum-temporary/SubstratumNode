@@ -5,6 +5,9 @@ branches:
 
 language: minimal
 
+before_cache:
+  - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
+
 cache:
   - directories:
     - $TRAVIS_HOME/.cargo/
@@ -30,7 +33,8 @@ jobs:
         ci/install_node_toolchain.sh &&
         ci/install_ui_toolchain.sh &&
         export PATH="$PATH:$TRAVIS_HOME/.cargo/bin:$TRAVIS_HOME/.nvm/versions/node/v$NODE_JS_VERSION/bin" &&
-        ls -lR ~/.cargo ||
+        source "$TRAVIS_HOME/.nvm/nvm.sh" &&
+        nvm install 10.16.3 &&
         ci/prepare_build.sh &&
         node/ci/build.sh &&
         dns_utility/ci/build.sh &&
