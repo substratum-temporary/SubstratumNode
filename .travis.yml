@@ -3,14 +3,14 @@ branches:
   only:
     - master
 
-script: echo "Nothing here..."
+language: minimal
 
 jobs:
   include:
     - stage: "Stage 1"
     - sudo: true
     - env:
-        - NODE_JS_VERSION="10.6.3" PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+        - NODE_JS_VERSION="10.6.3" PATH="$PATH:$TRAVIS_HOME/.cargo/bin:$TRAVIS_HOME/.nvm/versions/node/v$NODE_JS_VERSION/bin"
     - cache:
       - directories:
         - $TRAVIS_HOME/.cargo/
@@ -28,6 +28,8 @@ jobs:
         ci/install_ui_toolchain.sh
     - before_script:
       - |
+        echo PATH so far: "$PATH" &&
+        ls -l "$TRAVIS_HOME/.cargo/bin" &&
         ci/prepare_build.sh &&
         node/ci/build.sh &&
         dns_utility/ci/build.sh
@@ -51,7 +53,7 @@ jobs:
         - node-ui/node_modules
         - node-ui/dist/
     - env:
-        - NODE_JS_VERSION="10.6.3" PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+        - NODE_JS_VERSION="10.6.3" PATH="$PATH:$TRAVIS_HOME/.cargo/bin:$TRAVIS_HOME/.nvm/versions/node/v$NODE_JS_VERSION/bin"
     - install:
         - |
           ci/install_node_toolchain.sh &&
