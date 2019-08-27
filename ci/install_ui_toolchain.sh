@@ -7,11 +7,6 @@ if [[ ! -f "$HOME/.nvm/versions/node/v10.16.3/bin/node" ]]; then
   sudo apt-get install -y nodejs
   source "$HOME/.nvm/nvm.sh"
   nvm install 10.16.3
-
-  echo "Path: $PATH"
-  echo "NVM_BIN: $NVM_BIN"
-  echo "node.js version: $(node --version)"
-
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   sudo apt-get update
