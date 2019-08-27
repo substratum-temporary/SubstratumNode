@@ -42,12 +42,12 @@ script:
 jobs:
   include:
     - stage: "Stage 1"
-    - cache:
-      - directories:
-        - node-ui/dist/
-    - before_script:
+      cache:
+        directories:
+          - node-ui/dist/
+      before_script:
       - ci/prepare_build.sh && node/ci/build.sh && dns_utility/ci/build.sh
-    - script:
+      script:
       - node/ci/unit_tests.sh
       - dns_utility/ci/unit_tests.sh
       - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
@@ -55,14 +55,14 @@ jobs:
       - node-ui/ci/build.sh
 
     - stage: "Stage 2"
-    - cache:
-        - directories:
+      cache:
+        directories:
             - node-ui/dist/
-    - before_script: |
-      which sccache || cargo install sccache || echo "Skipping sccache installation"
-      sccache --start-server || echo "sccache server already running"
-      export RUSTC_WRAPPER=sccache
-    - script:
+      before_script: |
+        which sccache || cargo install sccache || echo "Skipping sccache installation"
+        sccache --start-server || echo "sccache server already running"
+        export RUSTC_WRAPPER=sccache
+      script:
       - node-ui/ci/ng_tests.sh
       - xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" node-ui/ci/integration_tests.sh
       - multinode_integration_tests/ci/all.sh
