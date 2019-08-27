@@ -68,7 +68,7 @@ jobs:
         - dns_utility/ci/unit_tests.sh
         - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
         - nvm use $NODE_JS_VERSION
-        - node-ui/unit_tests.sh
+        - node-ui/ci/unit_tests.sh
         - node-ui/ci/build.sh
 
     - stage: "Run Slow Tests"
