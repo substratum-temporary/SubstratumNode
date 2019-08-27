@@ -49,6 +49,7 @@ jobs:
       script: |
         echo "Path: $PATH"
         ls -lR "$TRAVIS_HOME/.cargo/bin"
+        nvm use $NODE_JS_VERSION
         ci/prepare_build.sh
 #        node/ci/build.sh
 #        dns_utility/ci/build.sh

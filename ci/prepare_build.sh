@@ -7,7 +7,7 @@ echo "Preparing build"
 
 #which sccache || cargo install sccache
 #"$CI_DIR/sccache.sh"
-"$CI_DIR/format.sh"
+#"$CI_DIR/format.sh"
 
 "$CI_DIR/../node-ui/ci/setup.sh"
 "$CI_DIR/../node-ui/ci/lint.sh"
