@@ -51,8 +51,8 @@ jobs:
         ls -lR "$TRAVIS_HOME/.cargo/bin"
         nvm use $NODE_JS_VERSION
         ci/prepare_build.sh
-#        node/ci/build.sh
-#        dns_utility/ci/build.sh
+        node/ci/build.sh
+        dns_utility/ci/build.sh
 
     - stage: "Run Quick Tests"
       env:
@@ -64,9 +64,9 @@ jobs:
 #      before_script: |
 #        ci/sccache.sh
       script:
-#        - node/ci/unit_tests.sh
-#        - dns_utility/ci/unit_tests.sh
-#        - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
+        - node/ci/unit_tests.sh
+        - dns_utility/ci/unit_tests.sh
+        - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
         - nvm use $NODE_JS_VERSION
         - node-ui/unit_tests.sh
         - node-ui/ci/build.sh
