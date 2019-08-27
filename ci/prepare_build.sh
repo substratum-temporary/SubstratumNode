@@ -5,7 +5,8 @@ CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 echo "Preparing build"
 
-"$CI_DIR/sccache.sh"
+#which sccache || cargo install sccache
+#"$CI_DIR/sccache.sh"
 "$CI_DIR/format.sh"
 
 "$CI_DIR/../node-ui/ci/setup.sh"
