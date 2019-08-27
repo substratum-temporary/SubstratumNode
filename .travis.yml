@@ -7,32 +7,27 @@ language: minimal
 
 sudo: true
 
+cache:
+  directories:
+    - $TRAVIS_HOME/.cargo/
+    - $TRAVIS_HOME/.cache/sccache/
+    - $TRAVIS_HOME/.rustup/
+    - $TRAVIS_HOME/.nvm/
+    - node/target
+    - dns_utility/target
+    - node-ui/node_modules
+    - node-ui/dist/
+
 script: echo "Nothing"
 
 jobs:
   include:
     - stage: "Install Toolchains"
-      cache:
-        directories:
-          - $TRAVIS_HOME/.cargo/
-          - $TRAVIS_HOME/.cache/sccache/
-          - $TRAVIS_HOME/.rustup/
-          - $TRAVIS_HOME/.nvm/
       script: |
           ci/install_node_toolchain.sh
           ci/install_ui_toolchain.sh
 
     - stage: "Build Binaries and Run Quick Tests"
-      cache:
-        directories:
-          - $TRAVIS_HOME/.cargo/
-          - $TRAVIS_HOME/.cache/sccache/
-          - $TRAVIS_HOME/.rustup/
-          - $TRAVIS_HOME/.nvm/
-          - node/target
-          - dns_utility/target
-          - node-ui/node_modules
-          - node-ui/dist/
       env:
         - NODE_JS_VERSION=10.6.3 RUSTC_WRAPPER=sccache
       before_script: |
@@ -47,16 +42,6 @@ jobs:
         - node-ui/ci/build.sh
 
     - stage: "Run Slow Tests"
-      cache:
-        directories:
-          - $TRAVIS_HOME/.cargo/
-          - $TRAVIS_HOME/.cache/sccache/
-          - $TRAVIS_HOME/.rustup/
-          - $TRAVIS_HOME/.nvm/
-          - node/target
-          - dns_utility/target
-          - node-ui/node_modules
-          - node-ui/dist/
       env:
         - NODE_JS_VERSION=10.6.3 RUSTC_WRAPPER=sccache
       before_script: |
