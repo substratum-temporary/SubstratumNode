@@ -5,55 +5,63 @@ branches:
 
 language: minimal
 
-before_cache:
-  - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
-
-cache:
-  - directories:
-    - $TRAVIS_HOME/.cargo/
-    - $TRAVIS_HOME/.cache/sccache/
-    - $TRAVIS_HOME/.rustup/
-    - $TRAVIS_HOME/.nvm/
-    - node/target
-    - dns_utility/target
-    - port_exposer
-    - node-ui/node_modules
-    - node-ui/dist/
-
-env:
-  - NODE_JS_VERSION="10.6.3" PATH="$PATH:$TRAVIS_HOME/.cargo/bin:$TRAVIS_HOME/.nvm/versions/node/v$NODE_JS_VERSION/bin"
-
 sudo: true
+
+script: echo "Nothing"
 
 jobs:
   include:
-    - stage: "Stage 1"
-    - script:
-      - |
-        ci/install_node_toolchain.sh &&
-        ci/install_ui_toolchain.sh &&
-        export PATH="$PATH:$TRAVIS_HOME/.cargo/bin:$TRAVIS_HOME/.nvm/versions/node/v$NODE_JS_VERSION/bin" &&
-        source "$TRAVIS_HOME/.nvm/nvm.sh" &&
-        nvm install 10.16.3 &&
-        ci/prepare_build.sh &&
-        node/ci/build.sh &&
-        dns_utility/ci/build.sh &&
-        node/ci/unit_tests.sh &&
-        dns_utility/ci/unit_tests.sh &&
-        node/ci/integration_tests.sh &&
-        dns_utility/ci/integration_tests.sh &&
-        node-ui/ci/unit_tests.sh &&
-        node-ui/ci/build.sh
+    - stage: "Install Toolchains"
+      cache:
+        directories:
+          - $TRAVIS_HOME/.cargo/
+          - $TRAVIS_HOME/.cache/sccache/
+          - $TRAVIS_HOME/.rustup/
+          - $TRAVIS_HOME/.nvm/
+      script: |
+          ci/install_node_toolchain.sh
+          ci/install_ui_toolchain.sh
 
-    - stage: "Stage 2"
-    - env:
-        - NODE_JS_VERSION="10.6.3" PATH="$PATH:$TRAVIS_HOME/.cargo/bin:$TRAVIS_HOME/.nvm/versions/node/v$NODE_JS_VERSION/bin"
-    - script:
-      - |
-        ci/install_node_toolchain.sh &&
-        ci/install_ui_toolchain.sh
-        export PATH="$PATH:$TRAVIS_HOME/.cargo/bin:$TRAVIS_HOME/.nvm/versions/node/v$NODE_JS_VERSION/bin" &&
-        ci/sccache.sh &&
-        node-ui/ci/ng_tests.sh &&
-        xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" node-ui/ci/integration_tests.sh &&
-        multinode_integration_tests/ci/all.sh
+    - stage: "Build Binaries and Run Quick Tests"
+      cache:
+        directories:
+          - $TRAVIS_HOME/.cargo/
+          - $TRAVIS_HOME/.cache/sccache/
+          - $TRAVIS_HOME/.rustup/
+          - $TRAVIS_HOME/.nvm/
+          - node/target
+          - dns_utility/target
+          - node-ui/node_modules
+          - node-ui/dist/
+      env:
+        - NODE_JS_VERSION=10.6.3 RUSTC_WRAPPER=sccache
+      before_script: |
+        ci/prepare_build.sh
+        node/ci/build.sh
+        dns_utility/ci/build.sh
+      script:
+        - node/ci/unit_tests.sh
+        - dns_utility/ci/unit_tests.sh
+        - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
+        - node-ui/unit_tests.sh
+        - node-ui/ci/build.sh
+
+    - stage: "Run Slow Tests"
+      cache:
+        directories:
+          - $TRAVIS_HOME/.cargo/
+          - $TRAVIS_HOME/.cache/sccache/
+          - $TRAVIS_HOME/.rustup/
+          - $TRAVIS_HOME/.nvm/
+          - node/target
+          - dns_utility/target
+          - node-ui/node_modules
+          - node-ui/dist/
+      env:
+        - NODE_JS_VERSION=10.6.3 RUSTC_WRAPPER=sccache
+      before_script: |
+        ci/sccache.sh
+      script:
+        - node-ui/ci/ng_tests.sh
+        - xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" node-ui/ci/integration_tests.sh
+        - multinode_integration_tests/ci/all.sh
