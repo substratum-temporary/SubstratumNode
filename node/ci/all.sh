@@ -3,6 +3,7 @@
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 NODE_PARENT_DIR="$1"
 
+export RUSTC_WRAPPER=sccache
 pushd "$CI_DIR/.."
 ci/lint.sh
 ci/unit_tests.sh
