@@ -27,7 +27,7 @@ jobs:
 
     - stage: "Build Binaries and Run Quick Tests"
       env:
-        - NODE_JS_VERSION=10.6.3 RUSTC_WRAPPER=sccache
+        - NODE_JS_VERSION=10.6.3 RUSTC_WRAPPER=sccache PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
       before_script: |
         ci/prepare_build.sh
         node/ci/build.sh
@@ -49,7 +49,7 @@ jobs:
 
     - stage: "Run Slow Tests"
       env:
-        - NODE_JS_VERSION=10.6.3 RUSTC_WRAPPER=sccache
+        - NODE_JS_VERSION=10.6.3 RUSTC_WRAPPER=sccache PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
       before_script: |
         ci/sccache.sh
       workspaces:
