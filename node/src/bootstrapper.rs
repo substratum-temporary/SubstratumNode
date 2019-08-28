@@ -711,7 +711,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn initialize_as_privileged_with_no_args_binds_http_and_tls_ports() {
         let _lock = INITIALIZATION.lock();
         let (first_handler, first_handler_log) =
@@ -753,7 +752,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO: Why still ignored? Delete?
     fn initialize_as_privileged_with_no_args_produces_empty_clandestine_discriminator_factories_vector(
     ) {
         let _lock = INITIALIZATION.lock();
@@ -815,7 +813,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO: Why ignored?
     fn initialize_as_unprivileged_passes_node_descriptor_to_ui_config() {
         let _lock = INITIALIZATION.lock();
         let data_dir = ensure_node_home_directory_exists(
@@ -846,7 +843,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO: Why ignored?
     fn initialize_as_unprivileged_sets_gas_price_on_blockchain_config() {
         let _lock = INITIALIZATION.lock();
         let data_dir = ensure_node_home_directory_exists(
@@ -913,7 +909,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     fn init_as_privileged_stores_dns_servers_and_passes_them_to_actor_system_factory_for_proxy_client_in_init_as_unprivileged(
     ) {
         let _lock = INITIALIZATION.lock();
@@ -960,7 +955,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     #[should_panic(expected = "Could not listen on port")]
     fn initialize_as_privileged_panics_if_tcp_listener_doesnt_bind() {
         let _lock = INITIALIZATION.lock();
@@ -996,7 +990,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO: Why ignored?
     fn initialize_cryptde_with_cryptde_null_uses_cryptde_null() {
         let cryptde_null = cryptde().clone();
         let cryptde_null_public_key = cryptde_null.public_key().clone();
@@ -1053,7 +1046,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO: Why are we still ignoring this? Should we delete it?
     fn initialize_as_unprivileged_binds_clandestine_port() {
         let _lock = INITIALIZATION.lock();
         let data_dir = ensure_node_home_directory_exists(
@@ -1107,7 +1099,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     fn initialize_as_unprivileged_moves_streams_from_listener_handlers_to_stream_handler_pool() {
         let _lock = INITIALIZATION.lock();
         let data_dir = ensure_node_home_directory_exists("bootstrapper", "initialize_as_unprivileged_moves_streams_from_listener_handlers_to_stream_handler_pool");
@@ -1145,7 +1136,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     fn bootstrapper_as_future_polls_listener_handler_futures() {
         let _lock = INITIALIZATION.lock();
         let data_dir = ensure_node_home_directory_exists(
@@ -1237,7 +1227,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     fn establish_clandestine_port_handles_specified_port() {
         let data_dir = ensure_node_home_directory_exists(
             "bootstrapper",
@@ -1291,7 +1280,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     fn establish_clandestine_port_handles_unspecified_port() {
         let cryptde = CryptDENull::from(&PublicKey::new(&[1, 2, 3, 4]), DEFAULT_CHAIN_ID);
         let data_dir = ensure_node_home_directory_exists(
@@ -1326,7 +1314,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     fn establish_clandestine_port_handles_zero_hop() {
         let data_dir = ensure_node_home_directory_exists(
             "bootstrapper",
@@ -1361,7 +1348,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     fn configurator_beats_all() {
         let id_wrapper = IdWrapperMock::new().getuid_result(111).getgid_result(222);
         let environment_wrapper =
@@ -1377,7 +1363,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // TODO Why ignored?
     fn environment_beats_id_wrapper() {
         let id_wrapper = IdWrapperMock::new().getuid_result(111).getgid_result(222);
         let environment_wrapper =
