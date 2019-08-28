@@ -1020,7 +1020,8 @@ mod tests {
             "{}:2.3.4.5:3456,4567",
             cryptde_ref.public_key_to_descriptor_fragment(cryptde_ref.public_key())
         );
-        let regex = Regex::new(r"SubstratumNode local descriptor: (.+?)\n").expect("Couldn't compile regular expression");
+        let regex = Regex::new(r"SubstratumNode local descriptor: (.+?)\n")
+            .expect("Couldn't compile regular expression");
         let captured_descriptor = regex
             .captures(stdout_dump.as_str())
             .unwrap()
@@ -1039,9 +1040,16 @@ mod tests {
         let expected_data = PlainData::new(b"ho'q ;iaerh;frjhvs;lkjerre");
         let crypt_data = cryptde_ref
             .encode(&cryptde_ref.public_key(), &expected_data)
-            .expect(&format!("Couldn't encrypt data {:?} with key {:?}", expected_data, cryptde_ref.public_key()));
-        let decrypted_data = cryptde_ref.decode(&crypt_data)
-            .expect(&format!("Couldn't decrypt data {:?} to key {:?}", crypt_data, cryptde_ref.public_key()));
+            .expect(&format!(
+                "Couldn't encrypt data {:?} with key {:?}",
+                expected_data,
+                cryptde_ref.public_key()
+            ));
+        let decrypted_data = cryptde_ref.decode(&crypt_data).expect(&format!(
+            "Couldn't decrypt data {:?} to key {:?}",
+            crypt_data,
+            cryptde_ref.public_key()
+        ));
         assert_eq!(decrypted_data, expected_data)
     }
 
