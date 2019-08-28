@@ -19,13 +19,12 @@ cache:
 
 script: echo "Nothing"
 
-matrix:
-  include:
-    - os: linux
-    - os: osx
-    - os: windows
+os:
+  - linux
+  - osx
+  - windows
 
-jobs:
+matrix:
   include:
     - stage: "Install Toolchains"
       workspaces:
