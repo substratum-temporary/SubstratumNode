@@ -10,5 +10,5 @@ if [[ ! -f "$HOME/.nvm/versions/node/v10.16.3/bin/node" ]]; then
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   sudo apt-get update
-  sudo apt-get install -y yarn xvfb
+  sudo apt-get install -y yarn
 fi
