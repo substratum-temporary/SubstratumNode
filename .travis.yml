@@ -17,16 +17,7 @@ cache:
     - dns_utility/target
     - node-ui/node_modules
 
-os:
-  - linux
-  - osx
-  - windows
-
-stages:
-  - "Install Toolchains"
-  - "Build Binaries"
-  - "Run Quick Tests"
-  - "Run Slow Tests"
+os: osx
 
 jobs:
   include:
