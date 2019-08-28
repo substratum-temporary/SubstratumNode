@@ -17,12 +17,13 @@ cache:
     - dns_utility/target
     - node-ui/node_modules
 
-os:
-  - linux
-  - windows
-  - osx
-
 script: echo "Nothing"
+
+matrix:
+  include:
+    - os: linux
+    - os: osx
+    - os: windows
 
 jobs:
   include:
