@@ -33,12 +33,10 @@ jobs:
       script: |
         ci/install_node_toolchain.sh
         ci/install_ui_toolchain.sh
-      after_script: |
-        sccache --show-stats
 
     - stage: "Build Binaries"
       env:
-        - NODE_JS_VERSION=10.16.3 RUST_WRAPPER=sccache PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+        - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
       workspaces:
         use: toolchains
         create:
@@ -59,12 +57,10 @@ jobs:
         node/ci/build.sh
         dns_utility/ci/build.sh
         node-ui/ci/build.sh
-      after_script: |
-        sccache --show-stats
 
     - stage: "Run Quick Tests"
       env:
-        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" RUST_WRAPPER=sccache PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
+        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
       workspaces:
         use:
           - toolchains
@@ -77,12 +73,10 @@ jobs:
         - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
         - nvm use $NODE_JS_VERSION
         - node-ui/ci/unit_tests.sh
-      after_script: |
-        sccache --show-stats
 
     - stage: "Run Slow Tests"
       env:
-        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" RUST_WRAPPER=sccache PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
+        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
       workspaces:
         use:
           - toolchains
@@ -96,5 +90,3 @@ jobs:
         - node-ui/ci/ng_tests.sh
         - xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" node-ui/ci/integration_tests.sh
         - multinode_integration_tests/ci/all.sh
-      after_script: |
-        sccache --show-stats
