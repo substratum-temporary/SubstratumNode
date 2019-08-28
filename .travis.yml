@@ -22,6 +22,12 @@ os:
   - osx
   - windows
 
+stages:
+  - "Install Toolchains"
+  - "Build Binaries"
+  - "Run Quick Tests"
+  - "Run Slow Tests"
+
 jobs:
   include:
     - stage: "Install Toolchains"
