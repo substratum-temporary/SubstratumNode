@@ -29,9 +29,10 @@ jobs:
             - $TRAVIS_HOME/.cargo/
             - $TRAVIS_HOME/.rustup/
             - $TRAVIS_HOME/.nvm/
+            - $TRAVIS_HOME/.cache/sccache/
       script: |
-          ci/install_node_toolchain.sh
-          ci/install_ui_toolchain.sh
+        ci/install_node_toolchain.sh
+        ci/install_ui_toolchain.sh
 
     - stage: "Build Binaries"
       env:
@@ -46,6 +47,8 @@ jobs:
             - dns_utility/target
             - node-ui/node_modules
             - node-ui/dist/
+      before_script: |
+        ci/sccache.sh
       script: |
         echo "Path: $PATH"
         ls -lR "$TRAVIS_HOME/.cargo/bin"
@@ -62,8 +65,8 @@ jobs:
         use:
           - toolchains
           - binaries
-#      before_script: |
-#        ci/sccache.sh
+      before_script: |
+        ci/sccache.sh
       script:
         - node/ci/unit_tests.sh
         - dns_utility/ci/unit_tests.sh
@@ -80,8 +83,8 @@ jobs:
           - binaries
       install: |
         ci/install_ui_test_toolchain.sh
-#      before_script: |
-#        ci/sccache.sh
+      before_script: |
+        ci/sccache.sh
       script:
         - nvm use $NODE_JS_VERSION
         - node-ui/ci/ng_tests.sh
