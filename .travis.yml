@@ -87,7 +87,7 @@ jobs:
         sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
         apt update
         apt install -y google-chrome-stable
-      #      before_script: |
+#      before_script: |
 #        ci/sccache.sh
       script:
         - nvm use $NODE_JS_VERSION
