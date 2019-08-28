@@ -32,10 +32,6 @@ jobs:
       script: |
           ci/install_node_toolchain.sh
           ci/install_ui_toolchain.sh
-          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google.list
-          sudo apt update
-          sudo apt install -y google-chrome-stable
 
     - stage: "Build Binaries"
       env:
@@ -59,21 +55,21 @@ jobs:
         dns_utility/ci/build.sh
         node-ui/ci/build.sh
 
-#    - stage: "Run Quick Tests"
-#      env:
-#        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
-#      workspaces:
-#        use:
-#          - toolchains
-#          - binaries
-##      before_script: |
-##        ci/sccache.sh
-#      script:
-#        - node/ci/unit_tests.sh
-#        - dns_utility/ci/unit_tests.sh
-#        - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
-#        - nvm use $NODE_JS_VERSION
-#        - node-ui/ci/unit_tests.sh
+    - stage: "Run Quick Tests"
+      env:
+        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
+      workspaces:
+        use:
+          - toolchains
+          - binaries
+#      before_script: |
+#        ci/sccache.sh
+      script:
+        - node/ci/unit_tests.sh
+        - dns_utility/ci/unit_tests.sh
+        - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
+        - nvm use $NODE_JS_VERSION
+        - node-ui/ci/unit_tests.sh
 
     - stage: "Run Slow Tests"
       env:
@@ -83,7 +79,7 @@ jobs:
           - toolchains
           - binaries
       install: |
-        echo "Move Chrome installation in here"
+        ci/install_ui_test_toolchain.sh
 #      before_script: |
 #        ci/sccache.sh
       script:
