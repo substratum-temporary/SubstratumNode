@@ -17,7 +17,10 @@ cache:
     - dns_utility/target
     - node-ui/node_modules
 
-script: echo "Nothing"
+os:
+  - linux
+  - osx
+  - windows
 
 jobs:
   include:
