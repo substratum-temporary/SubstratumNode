@@ -17,7 +17,7 @@ cache:
     - dns_utility/target
     - node-ui/node_modules
 
-os: osx
+os: linux
 
 jobs:
   include:
@@ -40,23 +40,28 @@ jobs:
       workspaces:
         use: toolchains
         create:
-          name: binaries
+          name: node_binaries
           paths:
             - $TRAVIS_HOME/.cache/sccache/
             - node/target
-            - dns_utility/target
-            - node-ui/node_modules
-            - node-ui/dist/
       before_script: |
         ci/sccache.sh
       script: |
-        echo "Path: $PATH"
-        ls -lR "$TRAVIS_HOME/.cargo/bin"
-        nvm use $NODE_JS_VERSION
-        ci/prepare_build.sh
+        ci/prepare_node_build.sh
         node/ci/build.sh
+    - env:
+        - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      workspaces:
+        use: toolchains
+        create:
+          name: dns_utility_binaries
+          paths:
+            - $TRAVIS_HOME/.cache/sccache/
+            - dns_utility/target
+      before_script: |
+        ci/sccache.sh
+      script: |
         dns_utility/ci/build.sh
-        node-ui/ci/build.sh
 
     - stage: "Run Quick Tests"
       env:
@@ -65,14 +70,56 @@ jobs:
         use:
           - toolchains
           - binaries
+      script: |
+        nvm use $NODE_JS_VERSION
+        node-ui/ci/unit_tests.sh
+    - env:
+        - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      workspaces:
+        use:
+          - toolchains
+          - node_binaries
+          - dns_utility_binaries
+        create:
+          name: node_ui_binaries
+          paths:
+            - node-ui/node_modules
+            - node-ui/dist/
+      script: |
+        nvm use $NODE_JS_VERSION
+        ci/prepare_node_ui_build.sh
+        node-ui/ci/build.sh
+    - env:
+        - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      workspaces:
+        use:
+          - toolchains
+          - node_binaries
       before_script: |
         ci/sccache.sh
-      script:
-        - node/ci/unit_tests.sh
-        - dns_utility/ci/unit_tests.sh
-        - node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
-        - nvm use $NODE_JS_VERSION
-        - node-ui/ci/unit_tests.sh
+      script: |
+        node/ci/unit_tests.sh
+    - env:
+        - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      workspaces:
+        use:
+          - toolchains
+          - dns_utility_binaries
+      before_script: |
+        ci/sccache.sh
+      script: |
+        dns_utility/ci/unit_tests.sh
+    - env:
+        - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      workspaces:
+        use:
+          - toolchains
+          - node_binaries
+          - dns_utility_binaries
+      before_script: |
+        ci/sccache.sh
+      script: |
+        node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
 
     - stage: "Run Slow Tests"
       env:
@@ -80,7 +127,9 @@ jobs:
       workspaces:
         use:
           - toolchains
-          - binaries
+          - dns_utility_binaries
+          - node_binaries
+          - node_ui_binaries
       install: |
         ci/install_ui_test_toolchain.sh
       before_script: |
