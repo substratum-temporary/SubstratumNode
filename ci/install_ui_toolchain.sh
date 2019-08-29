@@ -8,6 +8,8 @@ function install_linux() {
     sudo apt-get install -y nodejs
     source "$HOME/.nvm/nvm.sh"
     nvm install 10.16.3
+  fi
+  if [[ $(which yarn) == "" ]]; then
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
     sudo apt-get update
@@ -20,6 +22,8 @@ function install_macOS() {
     brew install node || echo "" # Assume that if installation fails, it's because node is already installed
     source "$HOME/.nvm/nvm.sh"
     nvm install 10.16.3
+  fi
+  if [[ $(which yarn) == "" ]]; then
     npm install -g yarn
   fi
 }
