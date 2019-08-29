@@ -37,6 +37,7 @@ jobs:
     - stage: "Build Binaries"
       env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      name: "Build SubstratumNode"
       workspaces:
         use: toolchains
         create:
@@ -51,6 +52,7 @@ jobs:
         node/ci/build.sh
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      name: "Build dns_utility"
       workspaces:
         use: toolchains
         create:
@@ -66,6 +68,7 @@ jobs:
     - stage: "Run Quick Tests"
       env:
         - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
+      name: "Run node-ui Unit Tests"
       workspaces:
         use:
           - toolchains
@@ -75,6 +78,7 @@ jobs:
         node-ui/ci/unit_tests.sh
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      name: "Transpile node-ui TypeScript"
       workspaces:
         use:
           - toolchains
@@ -91,6 +95,7 @@ jobs:
         node-ui/ci/build.sh
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      name: "Run SubstratumNode Unit Tests"
       workspaces:
         use:
           - toolchains
@@ -101,6 +106,7 @@ jobs:
         node/ci/unit_tests.sh
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      name: "Run dns_utility Unit Tests"
       workspaces:
         use:
           - toolchains
@@ -111,6 +117,7 @@ jobs:
         dns_utility/ci/unit_tests.sh
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+      name: "Run SubstratumNode and dns_utility Zero-Hop Integration Tests"
       workspaces:
         use:
           - toolchains
@@ -124,6 +131,7 @@ jobs:
     - stage: "Run Slow Tests"
       env:
         - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
+      name: "Run node-ui Angular Tests"
       workspaces:
         use:
           - toolchains
@@ -132,10 +140,34 @@ jobs:
           - node_ui_binaries
       install: |
         ci/install_ui_test_toolchain.sh
-      before_script: |
-        ci/sccache.sh
       script:
         - nvm use $NODE_JS_VERSION
         - node-ui/ci/ng_tests.sh
+    - env:
+        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
+      name: "Run node-ui Integration Tests"
+      workspaces:
+        use:
+          - toolchains
+          - dns_utility_binaries
+          - node_binaries
+          - node_ui_binaries
+      install: |
+        ci/install_ui_test_toolchain.sh
+      script:
+        - nvm use $NODE_JS_VERSION
         - node-ui/ci/integration_tests.sh
+    - env:
+        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
+      name: "Run Multi-Node Integration Tests (only on Linux)"
+      workspaces:
+        use:
+          - toolchains
+          - dns_utility_binaries
+          - node_binaries
+      install: |
+        ci/install_ui_test_toolchain.sh
+      before_script: |
+        ci/sccache.sh
+      script:
         - ci/multinode_integration_test.sh
