@@ -17,7 +17,7 @@ function install_linux() {
 
 function install_macOS() {
   if [[ ! -f "$HOME/.nvm/versions/node/v10.16.3/bin/node" ]]; then
-    brew install node
+    brew install node || echo "" # Assume that if installation fails, it's because node is already installed
     source "$HOME/.nvm/nvm.sh"
     nvm install 10.16.3
     npm install -g yarn
