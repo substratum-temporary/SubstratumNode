@@ -16,7 +16,7 @@ case "$OSTYPE" in
     export RUSTC_WRAPPER=sccache
     export RUSTFLAGS="-D warnings -Anon-snake-case"
 
-    pushd "$CI_DIR/../ci/multinode_integration_tests"
+    pushd "$CI_DIR/../multinode_integration_tests"
     ci/all.sh "$PARENT_DIR"
     popd
     ;;
