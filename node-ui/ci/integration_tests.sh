@@ -6,7 +6,7 @@ NODE_BINARY="$(which node)"
 NODE_DIR="$(dirname "$NODE_BINARY")"
 
 function run_on_linux() {
-  xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" "sudo -E PATH=\"$PATH:$NODE_DIR\" ci/run_integration_tests.sh"
+  xvfb-run -a -e /tmp/xvfb.out -s "-screen 0 1024x768x8" sudo -E PATH="$PATH:$NODE_DIR" ci/run_integration_tests.sh
 }
 
 function run_on_macOS() {
