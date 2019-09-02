@@ -22,6 +22,22 @@ os: linux
 jobs:
   include:
     - stage: "Install Toolchains"
+      name: "Install Rust, sccache, node.js, yarn, etc."
+      os: linux
+      workspaces:
+        create:
+          name: toolchains
+          paths:
+            - $TRAVIS_HOME/.cargo/
+            - $TRAVIS_HOME/.rustup/
+            - $TRAVIS_HOME/.nvm/
+            - $TRAVIS_HOME/.cache/sccache/
+      script: |
+        ci/install_node_toolchain.sh
+        ci/install_ui_toolchain.sh
+
+    - name: "Install Rust, sccache, node.js, yarn, etc."
+      os: osx
       workspaces:
         create:
           name: toolchains
