@@ -33,6 +33,38 @@ install_toolchains: &install_toolchains
     ci/install_node_toolchain.sh
     ci/install_ui_toolchain.sh
 
+build_substratum_node: &build_substratum_node
+  env:
+    - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+  name: "Build SubstratumNode"
+  workspaces:
+    use: toolchains
+    create:
+      name: node_binaries
+      paths:
+        - $TRAVIS_HOME/.cache/sccache/
+        - node/target
+  before_script: |
+    ci/sccache.sh
+  script: |
+    ci/prepare_node_build.sh
+    node/ci/build.sh
+
+build_dns_utility: &build_dns_utility
+  env:
+    - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
+  name: "Build dns_utility"
+  workspaces:
+    use: toolchains
+    create:
+      name: dns_utility_binaries
+      paths:
+        - $TRAVIS_HOME/.cache/sccache/
+        - dns_utility/target
+  before_script: |
+    ci/sccache.sh
+  script: |
+    dns_utility/ci/build.sh
 
 jobs:
   include:
@@ -44,35 +76,17 @@ jobs:
       <<: *install_toolchains
 
     - stage: "Build Binaries"
-      env:
-        - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
-      name: "Build SubstratumNode"
-      workspaces:
-        use: toolchains
-        create:
-          name: node_binaries
-          paths:
-            - $TRAVIS_HOME/.cache/sccache/
-            - node/target
-      before_script: |
-        ci/sccache.sh
-      script: |
-        ci/prepare_node_build.sh
-        node/ci/build.sh
-    - env:
-        - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
-      name: "Build dns_utility"
-      workspaces:
-        use: toolchains
-        create:
-          name: dns_utility_binaries
-          paths:
-            - $TRAVIS_HOME/.cache/sccache/
-            - dns_utility/target
-      before_script: |
-        ci/sccache.sh
-      script: |
-        dns_utility/ci/build.sh
+      os: linux
+      <<: *build_substratum_node
+
+    - os: osx
+      <<: *build_substratum_node
+
+    - os: linux
+      <<: *build_dns_utility
+
+    - os: osx
+      <<: *build_dns_utility
 
     - stage: "Run Quick Tests"
       env:
