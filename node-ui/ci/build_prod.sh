@@ -3,7 +3,7 @@
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 pushd "$CI_DIR/.."
-ci/link_binaries.sh
+ci/copy_binaries.sh
 yarn build-prod
 chmod +x dist/static/**/*
 popd

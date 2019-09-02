@@ -73,9 +73,16 @@ jobs:
         use:
           - toolchains
           - binaries
+        create:
+          name: node_ui_generated
+          paths:
+            - node-ui/generated
       script: |
         nvm use $NODE_JS_VERSION
         node-ui/ci/unit_tests.sh
+      after_failure: |
+        ci/collect_results.sh
+        ci/publish_results.sh Failure
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
       name: "Transpile node-ui TypeScript"
@@ -93,6 +100,9 @@ jobs:
         nvm use $NODE_JS_VERSION
         ci/prepare_node_ui_build.sh
         node-ui/ci/build.sh
+      after_failure: |
+        ci/collect_results.sh
+        ci/publish_results.sh Failure
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
       name: "Run SubstratumNode Unit Tests"
@@ -100,10 +110,17 @@ jobs:
         use:
           - toolchains
           - node_binaries
+        create:
+          name: node_generated
+          paths:
+            - node/generated
       before_script: |
         ci/sccache.sh
       script: |
         node/ci/unit_tests.sh
+      after_failure: |
+        ci/collect_results.sh
+        ci/publish_results.sh Failure
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
       name: "Run dns_utility Unit Tests"
@@ -111,10 +128,17 @@ jobs:
         use:
           - toolchains
           - dns_utility_binaries
+        create:
+          name: dns_utility_generated
+          paths:
+            - dns_utility/generated
       before_script: |
         ci/sccache.sh
       script: |
         dns_utility/ci/unit_tests.sh
+      after_failure: |
+        ci/collect_results.sh
+        ci/publish_results.sh Failure
     - env:
         - NODE_JS_VERSION=10.16.3 PATH="$PATH:$TRAVIS_HOME/.cargo/bin"
       name: "Run SubstratumNode and dns_utility Zero-Hop Integration Tests"
@@ -127,6 +151,9 @@ jobs:
         ci/sccache.sh
       script: |
         node/ci/integration_tests.sh && dns_utility/ci/integration_tests.sh
+      after_failure: |
+        ci/collect_results.sh
+        ci/publish_results.sh Failure
 
     - stage: "Run Slow Tests"
       env:
@@ -138,11 +165,17 @@ jobs:
           - dns_utility_binaries
           - node_binaries
           - node_ui_binaries
+          - node_generated
+          - dns_utility_generated
+          - node_ui_generated
       install: |
         ci/install_ui_test_toolchain.sh
       script:
         - nvm use $NODE_JS_VERSION
         - node-ui/ci/ng_tests.sh
+      after_failure: |
+        ci/collect_results.sh
+        ci/publish_results.sh Failure
     - env:
         - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
       name: "Run node-ui Integration Tests"
@@ -152,11 +185,17 @@ jobs:
           - dns_utility_binaries
           - node_binaries
           - node_ui_binaries
+          - node_generated
+          - dns_utility_generated
+          - node_ui_generated
       install: |
         ci/install_ui_test_toolchain.sh
       script:
         - nvm use $NODE_JS_VERSION
         - node-ui/ci/integration_tests.sh
+      after_failure: |
+        ci/collect_results.sh
+        ci/publish_results.sh Failure
     - env:
         - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
       name: "Run Multi-Node Integration Tests (only on Linux)"
@@ -165,9 +204,25 @@ jobs:
           - toolchains
           - dns_utility_binaries
           - node_binaries
+          - node_generated
+          - dns_utility_generated
+          - node_ui_generated
       install: |
         ci/install_ui_test_toolchain.sh
       before_script: |
         ci/sccache.sh
       script:
         - ci/multinode_integration_test.sh
+      after_failure: |
+        ci/collect_results.sh
+        ci/publish_results.sh Failure
+    - stage: "Deploy"
+    - env:
+        - NODE_JS_VERSION=10.16.3 NVM_BIN="$TRAVIS_HOME/.nvm/versions/v$NODE_JS_VERSION/bin" PATH="$TRAVIS_HOME/.cargo/bin:$NVM_BIN:$PATH"
+      name: "Publish Successful Results"
+      workspaces:
+        use:
+          - node_ui_binaries
+      script: |
+        ci/collect_results.sh
+        ci/publish_results.sh Success

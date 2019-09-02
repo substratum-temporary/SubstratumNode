@@ -5,7 +5,7 @@ CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 pushd "$CI_DIR/.."
 ci/setup.sh
 ci/build.sh
-ci/link_binaries.sh
+ci/copy_binaries.sh
 
 case "$OSTYPE" in
    linux*)
