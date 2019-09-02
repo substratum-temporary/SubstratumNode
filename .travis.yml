@@ -19,36 +19,29 @@ cache:
 
 os: linux
 
+install_toolchains: &install_toolchains
+  name: "Install Rust, sccache, node.js, yarn, etc."
+  workspaces:
+    create:
+      name: toolchains
+      paths:
+        - $TRAVIS_HOME/.cargo/
+        - $TRAVIS_HOME/.rustup/
+        - $TRAVIS_HOME/.nvm/
+        - $TRAVIS_HOME/.cache/sccache/
+  script: |
+    ci/install_node_toolchain.sh
+    ci/install_ui_toolchain.sh
+
+
 jobs:
   include:
     - stage: "Install Toolchains"
-      name: "Install Rust, sccache, node.js, yarn, etc."
       os: linux
-      workspaces:
-        create:
-          name: toolchains
-          paths:
-            - $TRAVIS_HOME/.cargo/
-            - $TRAVIS_HOME/.rustup/
-            - $TRAVIS_HOME/.nvm/
-            - $TRAVIS_HOME/.cache/sccache/
-      script: |
-        ci/install_node_toolchain.sh
-        ci/install_ui_toolchain.sh
+      <<: *install_toolchains
 
-    - name: "Install Rust, sccache, node.js, yarn, etc."
-      os: osx
-      workspaces:
-        create:
-          name: toolchains
-          paths:
-            - $TRAVIS_HOME/.cargo/
-            - $TRAVIS_HOME/.rustup/
-            - $TRAVIS_HOME/.nvm/
-            - $TRAVIS_HOME/.cache/sccache/
-      script: |
-        ci/install_node_toolchain.sh
-        ci/install_ui_toolchain.sh
+      -os: osx
+      <<: *install_toolchains
 
     - stage: "Build Binaries"
       env:
