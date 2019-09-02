@@ -40,7 +40,7 @@ jobs:
       os: linux
       <<: *install_toolchains
 
-      -os: osx
+    - os: osx
       <<: *install_toolchains
 
     - stage: "Build Binaries"
