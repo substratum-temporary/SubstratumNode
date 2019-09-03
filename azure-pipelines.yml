@@ -19,9 +19,9 @@ variables:
   imageName: "ubuntu-latest"
 
 stages:
-  - stage: 'First Stage'
+  - stage: first_stage
     jobs:
-      - job: 'First Job'
+      - job: first_job
         pool:
           vmImage: $(imageName)
         steps:
@@ -31,7 +31,7 @@ stages:
           - bash: |
               echo "First Job - Step 2, line 1"
               echo "First Job - Step 2, line 2"
-      - job: 'Second Job'
+      - job: second_job
         pool:
           vmImage: $(imageName)
         steps:
@@ -42,25 +42,25 @@ stages:
               echo "Second Job - Step 2, line 1"
               echo "Second Job - Step 2, line 2"
 
-  - stage: 'Second Stage'
+  - stage: second_stage
     jobs:
-      - job: 'First Job'
+      - job: third_job
         pool:
           vmImage: $(imageName)
         steps:
           - bash: |
-              echo "First Job - Step 1, line 1"
-              echo "First Job - Step 1, line 2"
+              echo "Third Job - Step 1, line 1"
+              echo "Third Job - Step 1, line 2"
           - bash: |
-              echo "First Job - Step 2, line 1"
-              echo "First Job - Step 2, line 2"
-      - job: 'Second Job'
+              echo "Third Job - Step 2, line 1"
+              echo "Third Job - Step 2, line 2"
+      - job: fourth_job
         pool:
           vmImage: $(imageName)
         steps:
           - bash: |
-              echo "Second Job - Step 1, line 1"
-              echo "Second Job - Step 1, line 2"
+              echo "Fourth Job - Step 1, line 1"
+              echo "Fourth Job - Step 1, line 2"
           - bash: |
-              echo "Second Job - Step 2, line 1"
-              echo "Second Job - Step 2, line 2"
+              echo "Fourth Job - Step 2, line 1"
+              echo "Fourth Job - Step 2, line 2"
