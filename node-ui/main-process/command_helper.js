@@ -13,9 +13,9 @@ module.exports = (() => {
   const treeKill = require('tree-kill')
   const binaryFilename = (process.platform === 'win32') ? 'SubstratumNodeW' : 'SubstratumNode'
 
-  const runtimeArgs = [
-    '--dns-servers', '1.0.0.1,1.1.1.1,9.9.9.9,8.8.8.8', '--real-user', `${realUser()}`
-  ]
+  const windowsRuntimeArgs = ['--dns-servers', '1.0.0.1,1.1.1.1,9.9.9.9,8.8.8.8']
+  const unixRuntimeArgs = [...windowsRuntimeArgs, '--real-user', `${realUser()}`]
+  let runtimeArgs
 
   function realUser () {
     let uid
@@ -75,7 +75,15 @@ module.exports = (() => {
 
     args.push(earningDerivationPath || consumingDerivationPath)
 
-    consoleWrapper.log(`getRecoverModeArgs(): ${args}`)
+    const logArgs = args.map((value, index) => {
+      if (value === walletPassword || value === mnemonicPassphrase || value === mnemonicPhrase) {
+        return '*'.repeat(8)
+      } else {
+        return value
+      }
+    })
+
+    consoleWrapper.log(`getRecoverModeArgs(): ${logArgs}`)
     return args
   }
 
@@ -90,7 +98,15 @@ module.exports = (() => {
 
     args.push(earningDerivationPath || consumingDerivationPath)
 
-    consoleWrapper.log(`getGenerateModeArgs(): ${args}`)
+    const logArgs = args.map((value, index) => {
+      if (value === walletPassword || value === mnemonicPassphrase) {
+        return '*'.repeat(8)
+      } else {
+        return value
+      }
+    })
+
+    consoleWrapper.log(`getGenerateModeArgs(): ${logArgs}`)
     return args
   }
 
@@ -197,9 +213,11 @@ module.exports = (() => {
   if (process.platform === 'win32') {
     startSubstratumNode = startNodeWindows
     stopSubstratumNode = stopNodeWindows
+    runtimeArgs = windowsRuntimeArgs
   } else {
     startSubstratumNode = startNodeUnix
     stopSubstratumNode = stopNodeUnix
+    runtimeArgs = unixRuntimeArgs
   }
 
   return {
