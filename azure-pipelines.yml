@@ -15,7 +15,8 @@ pr:
 #    windows:
 #      imageName: "windows-latest"
 
-imageName: "ubuntu-latest"
+variables:
+  imageName: "ubuntu-latest"
 
 stages:
 
