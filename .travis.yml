@@ -3,9 +3,9 @@
 ## Global configuration
 ##
 
-branches:
-  only:
-    - master
+#branches:
+#  only:
+#    - master
 
 language: minimal
 
