@@ -21,10 +21,40 @@ pool:
 variables:
   BOOGA: whop
 
-steps:
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        echo "Contents of BOOGA: $BOOGA"
-    displayName: 'Run a one-line script'
+stages:
+  - stage: First Stage
+    jobs:
+      - job: First Job
+        steps:
+          - bash:
+              - echo "First Job - Step 1, line 1"
+              - echo "First Job - Step 1, line 2"
+          - bash:
+              - echo "First Job - Step 2, line 1"
+              - echo "First Job - Step 2, line 2"
+      - job: Second Job
+        steps:
+          - bash:
+              - echo "Second Job - Step 1, line 1"
+              - echo "Second Job - Step 1, line 2"
+          - bash:
+              - echo "Second Job - Step 2, line 1"
+              - echo "Second Job - Step 2, line 2"
+  - stage: Second Stage
+    jobs:
+      - job: First Job
+        steps:
+          - bash:
+              - echo "First Job - Step 1, line 1"
+              - echo "First Job - Step 1, line 2"
+          - bash:
+              - echo "First Job - Step 2, line 1"
+              - echo "First Job - Step 2, line 2"
+      - job: Second Job
+        steps:
+          - bash:
+              - echo "Second Job - Step 1, line 1"
+              - echo "Second Job - Step 1, line 2"
+          - bash:
+              - echo "Second Job - Step 2, line 1"
+              - echo "Second Job - Step 2, line 2"
