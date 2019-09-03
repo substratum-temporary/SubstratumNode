@@ -6,21 +6,21 @@
 pr:
   - master
 
-strategy:
-  matrix:
-    linux:
-      imageName: "ubuntu-latest"
-    mac:
-      imageName: "macOS-latest"
-    windows:
-      imageName: "windows-latest"
+#strategy:
+#  matrix:
+#    linux:
+#      imageName: "ubuntu-latest"
+#    mac:
+#      imageName: "macOS-latest"
+#    windows:
+#      imageName: "windows-latest"
+
+imageName: "ubuntu-latest"
 
 stages:
 
   - stage: 'First Stage'
-
     jobs:
-
       - job: 'First Job'
         pool:
           vmImage: $(imageName)
@@ -41,11 +41,9 @@ stages:
           - bash:
               - echo "Second Job - Step 2, line 1"
               - echo "Second Job - Step 2, line 2"
-              -
+
   - stage: 'Second Stage'
-
     jobs:
-
       - job: 'First Job'
         pool:
           vmImage: $(imageName)
