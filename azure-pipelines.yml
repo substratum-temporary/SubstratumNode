@@ -15,9 +15,6 @@ strategy:
     windows:
       imageName: "windows-latest"
 
-pool:
-  vmImage: $(imageName)
-
 variables:
   BOOGA: whop
 
@@ -25,6 +22,8 @@ stages:
   - stage: First Stage
     jobs:
       - job: First Job
+        pool:
+          vmImage: $(imageName)
         steps:
           - bash:
               - echo "First Job - Step 1, line 1"
@@ -33,6 +32,8 @@ stages:
               - echo "First Job - Step 2, line 1"
               - echo "First Job - Step 2, line 2"
       - job: Second Job
+        pool:
+          vmImage: $(imageName)
         steps:
           - bash:
               - echo "Second Job - Step 1, line 1"
@@ -43,6 +44,8 @@ stages:
   - stage: Second Stage
     jobs:
       - job: First Job
+        pool:
+          vmImage: $(imageName)
         steps:
           - bash:
               - echo "First Job - Step 1, line 1"
@@ -51,6 +54,8 @@ stages:
               - echo "First Job - Step 2, line 1"
               - echo "First Job - Step 2, line 2"
       - job: Second Job
+        pool:
+          vmImage: $(imageName)
         steps:
           - bash:
               - echo "Second Job - Step 1, line 1"
