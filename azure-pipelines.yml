@@ -16,9 +16,12 @@ strategy:
       imageName: "windows-latest"
 
 stages:
-  - stage: First Stage
+
+  - stage: 'First Stage'
+
     jobs:
-      - job: First Job
+
+      - job: 'First Job'
         pool:
           vmImage: $(imageName)
         steps:
@@ -28,7 +31,7 @@ stages:
           - bash:
               - echo "First Job - Step 2, line 1"
               - echo "First Job - Step 2, line 2"
-      - job: Second Job
+      - job: 'Second Job'
         pool:
           vmImage: $(imageName)
         steps:
@@ -38,9 +41,12 @@ stages:
           - bash:
               - echo "Second Job - Step 2, line 1"
               - echo "Second Job - Step 2, line 2"
-  - stage: Second Stage
+              -
+  - stage: 'Second Stage'
+
     jobs:
-      - job: First Job
+
+      - job: 'First Job'
         pool:
           vmImage: $(imageName)
         steps:
@@ -50,7 +56,7 @@ stages:
           - bash:
               - echo "First Job - Step 2, line 1"
               - echo "First Job - Step 2, line 2"
-      - job: Second Job
+      - job: 'Second Job'
         pool:
           vmImage: $(imageName)
         steps:
