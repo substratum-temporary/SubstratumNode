@@ -23,15 +23,7 @@ steps:
     inputs:
       key: 1.37.0
       path: $(Pipeline.Workspace)/.cargo
-      cacheHitVar: NODE_TOOLCHAIN_CACHED
+      cacheHitVar: NODE_TOOLCHAIN_RESTORED
 
-  - bash: |
-    ci/install_node_toolchain.sh $(Pipeline.Workspace)
-    condition: ne(variables.NODE_TOOLCHAIN_CACHED, 'true')
-
-  - bash: |
-      echo "First Job - Step 1, line 1"
-      echo "First Job - Step 1, line 2"
-  - bash: |
-      echo "First Job - Step 2, line 1"
-      echo "First Job - Step 2, line 2"
+  - bash: ci/install_node_toolchain.sh $(Pipeline.Workspace)
+    condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
