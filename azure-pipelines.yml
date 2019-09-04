@@ -6,61 +6,32 @@
 pr:
   - master
 
-#strategy:
-#  matrix:
-#    linux:
-#      imageName: "ubuntu-latest"
-#    mac:
-#      imageName: "macOS-latest"
-#    windows:
-#      imageName: "windows-latest"
+strategy:
+  matrix:
+    linux:
+      imageName: "ubuntu-latest"
+    mac:
+      imageName: "macOS-latest"
+    windows:
+      imageName: "windows-latest"
 
-variables:
-  imageName: "ubuntu-latest"
+pool:
+  vmImage: $(imageName)
 
-stages:
-  - stage: first_stage
-    jobs:
-      - job: first_job
-        pool:
-          vmImage: $(imageName)
-        steps:
-          - bash: |
-              echo "First Job - Step 1, line 1"
-              echo "First Job - Step 1, line 2"
-          - bash: |
-              echo "First Job - Step 2, line 1"
-              echo "First Job - Step 2, line 2"
-      - job: second_job
-        pool:
-          vmImage: $(imageName)
-        steps:
-          - bash: |
-              echo "Second Job - Step 1, line 1"
-              echo "Second Job - Step 1, line 2"
-          - bash: |
-              echo "Second Job - Step 2, line 1"
-              echo "Second Job - Step 2, line 2"
+steps:
+  - task: CacheBeta@0
+    inputs:
+      key: 1.37.0
+      path: $(Pipeline.Workspace)/.cargo
+      cacheHitVar: NODE_TOOLCHAIN_CACHED
 
-  - stage: second_stage
-    jobs:
-      - job: third_job
-        pool:
-          vmImage: $(imageName)
-        steps:
-          - bash: |
-              echo "Third Job - Step 1, line 1"
-              echo "Third Job - Step 1, line 2"
-          - bash: |
-              echo "Third Job - Step 2, line 1"
-              echo "Third Job - Step 2, line 2"
-      - job: fourth_job
-        pool:
-          vmImage: $(imageName)
-        steps:
-          - bash: |
-              echo "Fourth Job - Step 1, line 1"
-              echo "Fourth Job - Step 1, line 2"
-          - bash: |
-              echo "Fourth Job - Step 2, line 1"
-              echo "Fourth Job - Step 2, line 2"
+  - bash: |
+    ci/install_node_toolchain.sh $(Pipeline.Workspace)
+    condition: ne(variables.NODE_TOOLCHAIN_CACHED, 'true')
+
+  - bash: |
+      echo "First Job - Step 1, line 1"
+      echo "First Job - Step 1, line 2"
+  - bash: |
+      echo "First Job - Step 2, line 1"
+      echo "First Job - Step 2, line 2"

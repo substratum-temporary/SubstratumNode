@@ -1,17 +1,19 @@
 #!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 
-function install_linux_macOS() {
-  if [[ $(which "$HOME/.cargo/bin/rustc") == "" ]]; then
-    curl https://sh.rustup.rs -sSf | bash -s -- -y
-    "$HOME/.cargo/bin/rustup" update
-    "$HOME/.cargo/bin/rustup" component add rustfmt
-    "$HOME/.cargo/bin/rustup" component add clippy
-  fi
+TARGET="$1"
+if [[ "$TARGET" == "" ]]; then
+  TARGET="$HOME"
+fi
 
-  if [[ $(which "$HOME/.cargo/bin/sccache") == "" ]]; then
-    "$HOME/.cargo/bin/cargo" install sccache
-  fi
+function install_linux_macOS() {
+  curl https://sh.rustup.rs -sSf | bash -s -- -y
+  "$HOME/.cargo/bin/rustup" update
+  "$HOME/.cargo/bin/rustup" component add rustfmt
+  "$HOME/.cargo/bin/rustup" component add clippy
+  "$HOME/.cargo/bin/cargo" install sccache
+
+  cp -R "$HOME/.cargo" "$TARGET/.cargo"
 }
 
 function install_windows() {
