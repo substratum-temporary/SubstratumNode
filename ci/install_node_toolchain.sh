@@ -17,8 +17,14 @@ function install_linux_macOS() {
 }
 
 function install_windows() {
-    echo "Not yet!"
-    exit 1
+  curl https://win.rustup.rs -sSf > /tmp/rustup-init.exe
+  /tmp/rustup-init.exe -y
+  "$HOME/.cargo/bin/rustup" update
+  "$HOME/.cargo/bin/rustup" component add rustfmt
+  "$HOME/.cargo/bin/rustup" component add clippy
+  "$HOME/.cargo/bin/cargo" install sccache
+
+  cp -R "$HOME/.cargo" "$TARGET/.cargo"
 }
 
 case "$OSTYPE" in
