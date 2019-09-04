@@ -26,5 +26,8 @@ steps:
       path: $(Pipeline.Workspace)/.cargo
       cacheHitVar: NODE_TOOLCHAIN_RESTORED
 
-  - bash: ci/install_node_toolchain.sh $(Pipeline.Workspace)
+  - bash: |
+      echo "HOME: $HOME"
+      echo "USERPROFILE: $USERPROFILE"
+      ci/install_node_toolchain.sh $(Pipeline.Workspace)
     condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
