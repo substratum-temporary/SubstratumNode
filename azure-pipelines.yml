@@ -21,7 +21,8 @@ pool:
 steps:
   - task: CacheBeta@0
     inputs:
-      key: "1.37.0" | $(Agent.OS)
+      key: |
+        "1.37.0" | $(Agent.OS)
       path: $(Pipeline.Workspace)/.cargo
       cacheHitVar: NODE_TOOLCHAIN_RESTORED
 
