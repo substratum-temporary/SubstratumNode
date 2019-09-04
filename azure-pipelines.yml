@@ -26,8 +26,10 @@ steps:
       path: $(Pipeline.Workspace)/.cargo
       cacheHitVar: NODE_TOOLCHAIN_RESTORED
 
-  - script: |
-
   - bash: |
       ci/install_node_toolchain.sh $(Pipeline.Workspace)
-    condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
+    condition: and(ne('${{ variables.vmImage }}', 'windows-latest'), ne(variables.NODE_TOOLCHAIN_RESTORED, 'true'))
+
+  - script: |
+      ci/install_node_toolchain.cmd $(Pipeline.Workspace)
+    condition: and(eq('${{ variables.vmImage }}', 'windows-latest'), ne(variables.NODE_TOOLCHAIN_RESTORED, 'true'))
