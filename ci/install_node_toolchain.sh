@@ -13,9 +13,7 @@ function install_linux_macOS() {
 }
 
 function install_windows() {
-  if [[ "$CACHE_TARGET" =~ ^([A-Za-z]):(.*) ]]; then
-    CACHE_TARGET="/${BASH_REMATCH[1]}/${BATCH_REMATCH[2]}"
-  fi
+  CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
   curl https://win.rustup.rs -sSf > /tmp/rustup-init.exe
   /tmp/rustup-init.exe -y
   common
