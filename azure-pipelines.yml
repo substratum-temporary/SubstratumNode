@@ -22,12 +22,12 @@ pool:
   vmImage: $(imageName)
 
 steps:
-  - task: CacheBeta@0
-    inputs:
-      key: |
-        "1.37.0" | $(Agent.OS)
-      path: $(Pipeline.Workspace)/.cargo
-      cacheHitVar: NODE_TOOLCHAIN_RESTORED
+#  - task: CacheBeta@0
+#    inputs:
+#      key: |
+#        "1.37.0" | $(Agent.OS)
+#      path: $(Pipeline.Workspace)/.cargo
+#      cacheHitVar: NODE_TOOLCHAIN_RESTORED
 
   - task: CacheBeta@0
     inputs:
@@ -43,9 +43,9 @@ steps:
       path: $(Pipeline.Workspace)/.yarn
       cacheHitVar: YARN_RESTORED
 
-  - bash: |
-      ci/install_node_toolchain.sh '$(Pipeline.Workspace)'
-    condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
+#  - bash: |
+#      ci/install_node_toolchain.sh '$(Pipeline.Workspace)'
+#    condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
 
   - bash: |
       ci/install_ui_toolchain.sh '$(Pipeline.Workspace)' '$(node_version)'
