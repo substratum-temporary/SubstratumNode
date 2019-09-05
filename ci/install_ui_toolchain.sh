@@ -60,10 +60,10 @@ case "$OSTYPE" in
     install_windows
     ;;
   Darwin | darwin*)
-    install_linux_macOS
+    install_macOS
     ;;
   linux*)
-    install_linux_macOS
+    install_linux
     ;;
   *)
     echo "Unrecognized operating system $OSTYPE"

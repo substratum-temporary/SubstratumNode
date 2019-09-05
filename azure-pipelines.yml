@@ -32,14 +32,14 @@ steps:
   - task: CacheBeta@0
     inputs:
       key: |
-        $(Pipeline.Workspace)/.nvm/versions/node/v$(node_version)/bin/node | $(Agent.OS)
+        "nodejs" | $(Agent.OS)
       path: $(Pipeline.Workspace)/.nvm
       cacheHitVar: NODE_JS_RESTORED
 
   - task: CacheBeta@0
     inputs:
       key: |
-        $(Pipeline.Workspace)/.yarn/bin/yarn | $(Agent.OS)
+        "yarn" | $(Agent.OS)
       path: $(Pipeline.Workspace)/.yarn
       cacheHitVar: YARN_RESTORED
 
