@@ -17,7 +17,7 @@ function install_linux() {
   curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
   sudo apt-get update
   sudo apt-get install -y nodejs
-  ls -lR ~
+  ls -laR ~/.*
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
@@ -33,7 +33,7 @@ function install_linux() {
 
 function install_macOS() {
   brew install node || echo "" # Assume that if installation fails, it's because node is already installed
-  ls -lR ~
+  ls -laR ~/.*
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
@@ -47,7 +47,7 @@ function install_macOS() {
 function install_windows() {
   CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
   msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
-  ls -lR ~
+  ls -laR ~/.*
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
