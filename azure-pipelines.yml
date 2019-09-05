@@ -15,6 +15,9 @@ strategy:
     windows:
       imageName: "windows-latest"
 
+variables:
+  NODE_VERSION: "10.16.3"
+
 pool:
   vmImage: $(imageName)
 
@@ -26,6 +29,24 @@ steps:
       path: $(Pipeline.Workspace)/.cargo
       cacheHitVar: NODE_TOOLCHAIN_RESTORED
 
+  - task: CacheBeta@0
+    inputs:
+      key: |
+        $(Pipeline.Workspace)/.nvm/versions/node/v$(variables.NODE_VERSION)/bin/node | $(Agent.OS)
+      path: $(Pipeline.Workspace)/.nvm
+      cacheHitVar: NODE_JS_RESTORED
+
+  - task: CacheBeta@0
+    inputs:
+      key: |
+        $(Pipeline.Workspace)/.yarn/bin/yarn | $(Agent.OS)
+      path: $(Pipeline.Workspace)/.yarn
+      cacheHitVar: YARN_RESTORED
+
   - bash: |
       ci/install_node_toolchain.sh '$(Pipeline.Workspace)'
     condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
+
+  - bash: |
+      ci/install_ui_toolchain.sh '$(Pipeline.Workspace)' '$(variables.NODE_VERSION)'
+    condition: or(ne(variables.NODE_JS_RESTORED, 'true'), ne(variables.YARN_RESTORED, 'true'))
