@@ -28,8 +28,8 @@ steps:
 
   - bash: |
       ci/install_node_toolchain.sh $(Pipeline.Workspace)
-    condition: and(ne(${{ variables.Agent.OS }}, 'Windows_NT'), ne(variables.NODE_TOOLCHAIN_RESTORED, 'true'))
+    condition: and(ne(${{ parameters.Agent.OS }}, 'Windows_NT'), ne(variables.NODE_TOOLCHAIN_RESTORED, 'true'))
 
   - script: |
       ci/install_node_toolchain.cmd $(Pipeline.Workspace)
-    condition: and(eq(${{ variables.Agent.OS }}, 'Windows_NT'), ne(variables.NODE_TOOLCHAIN_RESTORED, 'true'))
+    condition: and(eq(${{ parameters.Agent.OS }}, 'Windows_NT'), ne(variables.NODE_TOOLCHAIN_RESTORED, 'true'))
