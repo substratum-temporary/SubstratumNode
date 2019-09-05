@@ -21,6 +21,8 @@ function install_linux() {
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
+  mkdir -p "$CACHE_TARGET/usr/bin"
+  cp "/usr/bin/node" "$CACHE_TARGET/usr/bin/node"
   cp -R "$HOME/.nvm" "$CACHE_TARGET/.nvm"
 
   rm -r "$HOME/.yarn" || echo "yarn not installed"
