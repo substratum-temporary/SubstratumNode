@@ -25,7 +25,7 @@ steps:
   - task: CacheBeta@0
     inputs:
       key: |
-        "1.37.0" | $(Agent.OS)
+        "1.37.0" | $(Agent.OS) | "v2"
       path: $(Pipeline.Workspace)/.cargo
       cacheHitVar: NODE_TOOLCHAIN_RESTORED
 
