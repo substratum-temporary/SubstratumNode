@@ -9,6 +9,19 @@ fi
 
 function install_linux_macOS() {
   curl https://sh.rustup.rs -sSf | bash -s -- -y
+  common
+}
+
+function install_windows() {
+  if [[ "$CACHE_TARGET" =~ ^([A-Za-z]):(.*) ]]; then
+    CACHE_TARGET="/${BASH_REMATCH[1]}/${BATCH_REMATCH[2]}"
+  fi
+  curl https://win.rustup.rs -sSf > /tmp/rustup-init.exe
+  /tmp/rustup-init.exe -y
+  common
+}
+
+function common() {
   "$HOME/.cargo/bin/rustup" update
   "$HOME/.cargo/bin/rustup" component add rustfmt
   "$HOME/.cargo/bin/rustup" component add clippy
@@ -18,6 +31,9 @@ function install_linux_macOS() {
 }
 
 case "$OSTYPE" in
+  msys)
+    install_windows
+    ;;
   Darwin | darwin*)
     install_linux_macOS
     ;;
