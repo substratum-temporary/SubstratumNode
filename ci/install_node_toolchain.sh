@@ -8,12 +8,16 @@ else
 fi
 
 function install_linux_macOS() {
+  rm -r "$HOME/.cargo"
+  rm -r "$HOME/.rustup"
   curl https://sh.rustup.rs -sSf | bash -s -- -y
   common
 }
 
 function install_windows() {
   CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
+  rm -r "$HOME/.cargo"
+  rm -r "$HOME/.rustup"
   curl https://win.rustup.rs -sSf > /tmp/rustup-init.exe
   /tmp/rustup-init.exe -y
   common
@@ -26,6 +30,7 @@ function common() {
   "$HOME/.cargo/bin/cargo" install sccache
 
   cp -R "$HOME/.cargo" "$CACHE_TARGET/.cargo"
+  cp -R "$HOME/.rustup" "$CACHE_TARGET/.rustup"
 }
 
 case "$OSTYPE" in
