@@ -8,8 +8,8 @@ else
 fi
 
 function install_linux_macOS() {
-  rm -r "$HOME/.cargo"
-  rm -r "$HOME/.rustup"
+  rm -r "$HOME/.cargo" || echo "Rust cargo not installed on $OSTYPE"
+  rm -r "$HOME/.rustup" || echo "Rust rustup not installed on $OSTYPE"
   curl https://sh.rustup.rs -sSf | bash -s -- -y
   common
 }
