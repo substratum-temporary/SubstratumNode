@@ -1,36 +1,66 @@
 #!/bin/bash -ev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 
+if [[ "$1" == "" ]]; then
+  CACHE_TARGET="$HOME"
+else
+  CACHE_TARGET="$1"
+fi
+
+if [[ "$2" == "" ]]; then
+  NODE_VERSION="10.16.3"
+else
+  NODE_VERSION="$2"
+fi
+
 function install_linux() {
-  if [[ ! -f "$HOME/.nvm/versions/node/v10.16.3/bin/node" ]]; then
-    curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
-    sudo apt-get update
-    sudo apt-get install -y nodejs
-    source "$HOME/.nvm/nvm.sh"
-    nvm install 10.16.3
-  fi
-  if [[ $(which yarn) == "" ]]; then
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-    sudo apt-get update
-    sudo apt-get install -y yarn
-  fi
+  rm -r "$HOME/.nvm" || echo "node.js not installed"
+  curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+  sudo apt-get update
+  sudo apt-get install -y nodejs
+  source "$HOME/.nvm/nvm.sh"
+  nvm install "$NODE_VERSION"
+
+  mkdir -p "$CACHE_TARGET/usr/bin"
+  cp "/usr/bin/node" "$CACHE_TARGET/usr/bin/node"
+  cp -R "$HOME/.nvm" "$CACHE_TARGET/.nvm"
+
+  rm -r "$HOME/.yarn" || echo "yarn not installed"
+  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  sudo apt-get update
+  sudo apt-get install -y yarn
+
+  cp -R "$HOME/.yarn" "$CACHE_TARGET/.yarn"
 }
 
 function install_macOS() {
-  if [[ ! -f "$HOME/.nvm/versions/node/v10.16.3/bin/node" ]]; then
-    brew install node || echo "" # Assume that if installation fails, it's because node is already installed
-    source "$HOME/.nvm/nvm.sh"
-    nvm install 10.16.3
-  fi
-  if [[ $(which yarn) == "" ]]; then
-    npm install -g yarn
-  fi
+  rm -r "$HOME/.nvm" || echo "node.js not installed"
+  brew install node || echo "node.js is already installed"
+  source "$HOME/.nvm/nvm.sh"
+  nvm install "$NODE_VERSION"
+
+  cp -R "$HOME/.nvm" "$CACHE_TARGET/.nvm"
+
+  rm -r "$HOME/.yarn" || echo "yarn not installed"
+  npm install -g yarn
+
+  cp -R "$HOME/.yarn" "$CACHE_TARGET/.yarn"
 }
 
 function install_windows() {
-    echo "Not yet!"
-    exit 1
+  CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
+  rm -r "$HOME/.nvm" || echo "node.js not installed"
+  msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
+  source "$HOME/.nvm/nvm.sh"
+  nvm install "$NODE_VERSION"
+
+  cp -R "$HOME/.nvm" "$CACHE_TARGET/.nvm"
+
+  rm -r "$HOME/.yarn" || echo "yarn not installed"
+  npm install -g yarn
+
+  cp -R "$HOME/.yarn" "$CACHE_TARGET/.yarn"
 }
 
 case "$OSTYPE" in
@@ -44,6 +74,7 @@ case "$OSTYPE" in
     install_linux
     ;;
   *)
+    echo "Unrecognized operating system $OSTYPE"
     exit 1
     ;;
 esac
