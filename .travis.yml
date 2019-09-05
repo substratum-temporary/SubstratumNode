@@ -3,9 +3,9 @@
 ## Global configuration
 ##
 
-branches:
-  only:
-    - master
+#branches:
+#  only:
+#    - master
 
 language: minimal
 
@@ -264,79 +264,79 @@ publish_successful_results: &publish_successful_results
 jobs:
   include:
     - stage: "Install Toolchains"
-      os: linux
+#      os: linux
       <<: *install_toolchains
-    - os: osx
-      <<: *install_toolchains
-    - os: windows
-      <<: *install_toolchains
+#    - os: osx
+#      <<: *install_toolchains
+#    - os: windows
+#      <<: *install_toolchains
 
     - stage: "Build Binaries"
-      os: linux
+#      os: linux
       <<: *build_substratum_node
-    - os: osx
-      <<: *build_substratum_node
-    - os: windows
-      <<: *build_substratum_node
-    - os: linux
-      <<: *build_dns_utility
-    - os: osx
-      <<: *build_dns_utility
-    - os: windows
-      <<: *build_dns_utility
+#    - os: osx
+#      <<: *build_substratum_node
+#    - os: windows
+#      <<: *build_substratum_node
+#    - os: linux
+    - <<: *build_dns_utility
+#    - os: osx
+#      <<: *build_dns_utility
+#    - os: windows
+#      <<: *build_dns_utility
 
     - stage: "Run Quick Tests"
-      os: linux
+#      os: linux
       <<: *run_node_ui_unit_tests
-    - os: osx
-      <<: *run_node_ui_unit_tests
-    - os: windows
-      <<: *run_node_ui_unit_tests
-    - os: linux
-      <<: *transpile_node_ui_typescript
-    - os: osx
-      <<: *transpile_node_ui_typescript
-    - os: windows
-      <<: *transpile_node_ui_typescript
-    - os: linux
-      <<: *run_substratum_node_unit_tests
-    - os: osx
-      <<: *run_substratum_node_unit_tests
-    - os: windows
-      <<: *run_substratum_node_unit_tests
-    - os: linux
-      <<: *run_dns_utility_unit_tests
-    - os: osx
-      <<: *run_dns_utility_unit_tests
-    - os: windows
-      <<: *run_dns_utility_unit_tests
-    - os: linux
-      <<: *run_node_and_dns_integration_tests
-    - os: osx
-      <<: *run_node_and_dns_integration_tests
-    - os: windows
-      <<: *run_node_and_dns_integration_tests
+#    - os: osx
+#      <<: *run_node_ui_unit_tests
+#    - os: windows
+#      <<: *run_node_ui_unit_tests
+#    - os: linux
+    - <<: *transpile_node_ui_typescript
+#    - os: osx
+#      <<: *transpile_node_ui_typescript
+#    - os: windows
+#      <<: *transpile_node_ui_typescript
+#    - os: linux
+    - <<: *run_substratum_node_unit_tests
+#    - os: osx
+#      <<: *run_substratum_node_unit_tests
+#    - os: windows
+#      <<: *run_substratum_node_unit_tests
+#    - os: linux
+    - <<: *run_dns_utility_unit_tests
+#    - os: osx
+#      <<: *run_dns_utility_unit_tests
+#    - os: windows
+#      <<: *run_dns_utility_unit_tests
+#    - os: linux
+    - <<: *run_node_and_dns_integration_tests
+#    - os: osx
+#      <<: *run_node_and_dns_integration_tests
+#    - os: windows
+#      <<: *run_node_and_dns_integration_tests
 
     - stage: "Run Slow Tests"
-      os: linux
+#      os: linux
       <<: *run_node_ui_angular_tests
-    - os: osx
-      <<: *run_node_ui_angular_tests
-    - os: windows
-      <<: *run_node_ui_angular_tests
-    - os: linux
-      <<: *run_node_ui_integration_tests
-    - os: osx
-      <<: *run_node_ui_integration_tests
-    - os: windows
-      <<: *run_node_ui_integration_tests
-    - os: linux
-      <<: *run_multinode_integration_tests # Linux only
+#    - os: osx
+#      <<: *run_node_ui_angular_tests
+#    - os: windows
+#      <<: *run_node_ui_angular_tests
+#    - os: linux
+    - <<: *run_node_ui_integration_tests
+#    - os: osx
+#      <<: *run_node_ui_integration_tests
+#    - os: windows
+#      <<: *run_node_ui_integration_tests
+#    - os: linux
+    - <<: *run_multinode_integration_tests # Linux only
 
     - stage: "Deploy"
-      os: linux
+#      os: linux
       <<: *publish_successful_results
-    - os: osx
-      <<: *publish_successful_results
-    - os: windows
-      <<: *publish_successful_results
+#    - os: osx
+#      <<: *publish_successful_results
+#    - os: windows
+#      <<: *publish_successful_results
