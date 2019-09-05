@@ -18,7 +18,6 @@ function install_linux() {
   curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
   sudo apt-get update
   sudo apt-get install -y nodejs
-  ls -laR ~/.*
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
@@ -36,7 +35,6 @@ function install_linux() {
 function install_macOS() {
   rm -r "$HOME/.nvm" || echo "node.js not installed"
   brew install node || echo "node.js is already installed"
-  ls -laR ~/.*
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
@@ -52,7 +50,6 @@ function install_windows() {
   CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
   rm -r "$HOME/.nvm" || echo "node.js not installed"
   msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
-  ls -laR ~/.*
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
@@ -79,4 +76,3 @@ case "$OSTYPE" in
     exit 1
     ;;
 esac
-ls -lR ~
