@@ -14,9 +14,9 @@ function install_macOS() {
 }
 
 function install_windows() {
-  curl https://www.google.com/chrome/browser/desktop/index.html?msi=true >/tmp/ChromeStandaloneSetup.exe
-  echo -n "" > /tmp/ChromeStandaloneSetup.exe:Zone.Identifier
-  start "Installing Chrome silently" //wait "/tmp/ChromeStandaloneSetup.exe" //silent //install
+  curl https://www.google.com/chrome/browser/desktop/index.html?msi=true > "$TEMP/ChromeStandaloneSetup.exe"
+  cmd //C "echo.>%TEMP%\ChromeStandaloneSetup.exe:Zone.Identifier"
+  start "Installing Chrome silently" //wait "$TEMP/ChromeStandaloneSetup.exe" //silent //install
 }
 
 case "$OSTYPE" in
