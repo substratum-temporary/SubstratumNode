@@ -22,9 +22,12 @@ function install_linux() {
   curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
   sudo apt-get update
   sudo apt-get install -y nodejs
-  sudo find / -type d -name node 2> /dev/null
-  sudo find / -type d -name nodejs 2> /dev/null
-  sudo find / -type d -name .nvm 2> /dev/null
+  echo "Looking for node"
+  find / -type d -name node 2> /dev/null || echo "node not found"
+  echo "Looking for nodejs"
+  find / -type d -name nodejs 2> /dev/null || echo "nodejs not found"
+  echo "Looking for .nvm"
+  find / -type d -name .nvm 2> /dev/null || echo ".nvm not found"
   echo "NVM_DIR: $NVM_DIR"
   echo ".bashrc:"
   cat "$HOME/.bashrc"
@@ -54,9 +57,12 @@ function install_macOS() {
   rm -r "$HOME/.nvm" || echo "node.js configuration not installed"
   rm -r "/usr/lib/node_modules" || echo "No node_modules installed"
   brew install node || echo "node.js is already installed"
-  sudo find / -type d -name node 2> /dev/null
-  sudo find / -type d -name nodejs 2> /dev/null
-  sudo find / -type d -name .nvm 2> /dev/null
+  echo "Looking for node"
+  find / -type d -name node 2> /dev/null || echo "node not found"
+  echo "Looking for nodejs"
+  find / -type d -name nodejs 2> /dev/null || echo "nodejs not found"
+  echo "Looking for .nvm"
+  find / -type d -name .nvm 2> /dev/null || echo ".nvm not found"
   cat "$HOME/.bashrc"
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
@@ -79,9 +85,12 @@ function install_windows() {
   CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
   rm -r "$HOME/.nvm" || echo "node.js not installed"
   msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
-  find / -type d -name node 2> /dev/null
-  find / -type d -name nodejs 2> /dev/null
-  find / -type d -name .nvm 2> /dev/null
+  echo "Looking for node"
+  find / -type d -name node 2> /dev/null || echo "node not found"
+  echo "Looking for nodejs"
+  find / -type d -name nodejs 2> /dev/null || echo "nodejs not found"
+  echo "Looking for .nvm"
+  find / -type d -name .nvm 2> /dev/null || echo ".nvm not found"
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
