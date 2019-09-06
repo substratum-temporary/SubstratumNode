@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 
 if [[ "$1" == "" ]]; then
@@ -14,45 +14,27 @@ else
 fi
 
 function install_linux() {
-  rm -r "$HOME/.nvm" || echo "node.js not installed"
-  curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
-  sudo apt-get update
-  sudo apt-get install -y nodejs
-  source "$HOME/.nvm/nvm.sh"
-  nvm install "$NODE_VERSION"
+  rm "/usr/bin/yarn" || echo "yarn not installed"
+  rm -r "$HOME/.yarn" || echo "yarn configuration not installed"
+  sudo npm install -g yarn
 
   mkdir -p "$CACHE_TARGET/usr/bin"
-  cp "/usr/bin/node" "$CACHE_TARGET/usr/bin/node"
-  cp -R "$HOME/.nvm" "$CACHE_TARGET/.nvm"
-
-  rm -r "$HOME/.yarn" || echo "yarn not installed"
-  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  sudo apt-get update
-  sudo apt-get install -y yarn
-
-  cp -R "$HOME/.yarn" "$CACHE_TARGET/.yarn"
+  cp "/usr/bin/yarn" "$CACHE_TARGET/usr/bin/yarn"
 }
 
 function install_macOS() {
-  rm -r "$HOME/.nvm" || echo "node.js not installed"
-  brew install node || echo "node.js is already installed"
-  source "$HOME/.nvm/nvm.sh"
-  nvm install "$NODE_VERSION"
-
-  cp -R "$HOME/.nvm" "$CACHE_TARGET/.nvm"
-
-  rm -r "$HOME/.yarn" || echo "yarn not installed"
+  rm "/usr/local/bin/yarn" || echo "yarn not installed"
+  rm -r "$HOME/.yarn" || echo "yarn configuration not installed"
   npm install -g yarn
 
-  cp -R "$HOME/.yarn" "$CACHE_TARGET/.yarn"
+  mkdir -p "$CACHE_TARGET/usr/local/bin"
+  cp "/usr/local/bin/yarn" "$CACHE_TARGET/usr/local/bin/yarn"
 }
 
 function install_windows() {
   CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
   rm -r "$HOME/.nvm" || echo "node.js not installed"
   msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
-  source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
   cp -R "$HOME/.nvm" "$CACHE_TARGET/.nvm"
