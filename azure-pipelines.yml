@@ -50,3 +50,7 @@ steps:
   - bash: |
       ci/install_ui_toolchain.sh '$(Pipeline.Workspace)' '$(node_version)'
     condition: or(ne(variables.NODE_JS_RESTORED, 'true'), ne(variables.YARN_RESTORED, 'true'))
+
+  - bash: |
+      ci/all.sh
+      ci/multinode_integration_tests.sh
