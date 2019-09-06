@@ -43,4 +43,4 @@ steps:
     condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
 
   - bash: |
-      ci/install_node_ui_toolchain.sh '$(Pipeline.Workspace)'
+      ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
