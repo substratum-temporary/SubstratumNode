@@ -15,6 +15,7 @@ fi
 
 function install_linux() {
   rm "/usr/bin/node" || echo "node.js not installed"
+  rm "/usr/bin/nodejs" || echo "node.js not installed"
   rm "/usr/bin/npm" || echo "npm not installed"
   rm -r "$HOME/.nvm" || echo "node.js configuration not installed"
   rm -r "/usr/lib/node_modules" || echo "No node_modules installed"
@@ -24,6 +25,9 @@ function install_linux() {
   ls -la /usr/bin
   ls -la /usr/lib
   ls -la "$HOME"
+  echo "NVM_DIR: $NVM_DIR"
+  echo ".bashrc:"
+  cat "$HOME/.bashrc"
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
@@ -53,6 +57,9 @@ function install_macOS() {
   ls -la /usr/local/bin
   ls -la /usr/local/lib
   ls -la "$HOME"
+  echo "NVM_DIR: $NVM_DIR"
+  echo ".bashrc:"
+  cat "$HOME/.bashrc"
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
@@ -75,6 +82,9 @@ function install_windows() {
   rm -r "$HOME/.nvm" || echo "node.js not installed"
   msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
   ls -la "$HOME/AppData"
+  echo "NVM_DIR: $NVM_DIR"
+  echo ".bashrc:"
+  cat "$HOME/.bashrc"
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
