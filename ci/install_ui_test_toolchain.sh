@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 
 function install_linux() {
@@ -14,8 +14,8 @@ function install_macOS() {
 }
 
 function install_windows() {
-    echo "Not yet!"
-    exit 1
+  curl https://www.google.com/chrome/browser/desktop/index.html?msi=true >/tmp/ChromeStandaloneSetup.exe
+  start "Installing Chrome silently" //wait "/tmp/ChromeStandaloneSetup.exe" //silent //install
 }
 
 case "$OSTYPE" in
