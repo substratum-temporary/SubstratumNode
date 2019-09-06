@@ -21,7 +21,7 @@ function install_linux() {
   curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
   sudo apt-get update
   sudo apt-get install -y nodejs
-  source "$HOME/.nvm/nvm.sh"
+#  source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
   mkdir -p "$CACHE_TARGET/usr/bin"
