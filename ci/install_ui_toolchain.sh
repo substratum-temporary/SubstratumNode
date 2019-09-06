@@ -21,7 +21,10 @@ function install_linux() {
   curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
   sudo apt-get update
   sudo apt-get install -y nodejs
-#  source "$HOME/.nvm/nvm.sh"
+  ls -la /usr/bin
+  ls -la /usr/lib
+  ls -la "$HOME"
+  source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
   mkdir -p "$CACHE_TARGET/usr/bin"
@@ -47,6 +50,9 @@ function install_macOS() {
   rm -r "$HOME/.nvm" || echo "node.js configuration not installed"
   rm -r "/usr/lib/node_modules" || echo "No node_modules installed"
   brew install node || echo "node.js is already installed"
+  ls -la /usr/local/bin
+  ls -la /usr/local/lib
+  ls -la "$HOME"
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
@@ -68,6 +74,7 @@ function install_windows() {
   CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
   rm -r "$HOME/.nvm" || echo "node.js not installed"
   msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
+  ls -la "$HOME/AppData"
   source "$HOME/.nvm/nvm.sh"
   nvm install "$NODE_VERSION"
 
