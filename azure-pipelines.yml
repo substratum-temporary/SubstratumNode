@@ -38,13 +38,20 @@ steps:
 
   - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)'
     condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
+    displayName: "Install Node toolchain"
 
   - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
+    displayName: "Install NodeUI test toolchain"
 
-  - bash: ci/prepare_node_build.sh
-  - bash: ci/sccache.sh && node/ci/all.sh
+  - bash: PATH="$HOME/.cargo/bin:$PATH" ci/prepare_node_build.sh
+    displayName: "Prepare Node build"
+  - bash: PATH="$HOME/.cargo/bin:$PATH" ci/sccache.sh && node/ci/all.sh
+    displayName: "Build Node and run tests"
 
   - bash: ci/prepare_node_ui_build.sh
+    displayName: "Prepare NodeUI build"
   - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
+    displayName: "Build NodeUI and run tests"
 
-  - bash: ci/multinode_integration_test.sh
+  - bash: PATH="$HOME/.cargo/bin:$PATH" ci/multinode_integration_test.sh
+    displayName: "Run multinode integration tests"
