@@ -36,20 +36,15 @@ steps:
       command: 'custom'
       customCommand: 'install -g yarn'
 
-  - bash: |
-      ci/install_node_toolchain.sh '$(Pipeline.Workspace)'
+  - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)'
     condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
 
-  - bash: |
-      ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
+  - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
 
-  - bash: |
-      ci/prepare_node_build.sh
-      ci/sccache.sh
-      node/ci/all.sh
-      ci/prepare_node_ui_build.sh
-      node-ui/ci/unit_tests.sh
-      node-ui/ci/build.sh
-      node-ui/ci/ng_tests.sh
-      node-ui/ci/integration_tests.sh
-      ci/multinode_integration_test.sh
+  - bash: ci/prepare_node_build.sh
+  - bash: ci/sccache.sh && node/ci/all.sh
+
+  - bash: ci/prepare_node_ui_build.sh
+  - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
+
+  - bash: ci/multinode_integration_test.sh
