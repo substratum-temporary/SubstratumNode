@@ -2,8 +2,7 @@
 
 trigger:
   branches:
-    exclude:
-      '*'
+    exclude: '*'
 
 pr:
   - master
