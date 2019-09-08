@@ -2,7 +2,7 @@
 
 trigger:
   branches:
-    exclude: '*'
+    include: "booga"
 
 pr:
   - master
