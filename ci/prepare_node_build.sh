@@ -4,5 +4,4 @@ CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 #PARENT_DIR="$1"
 
 echo "Path: $PATH"
-find /home/vsts/.cargo/bin/ -type f
 "$CI_DIR/format.sh"
