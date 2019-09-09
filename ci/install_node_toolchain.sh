@@ -29,8 +29,8 @@ function common() {
   "$HOME/.cargo/bin/rustup" component add clippy
   "$HOME/.cargo/bin/cargo" install sccache
 
-  cp -R "$HOME/.cargo" "$CACHE_TARGET/.cargo"
-  cp -R "$HOME/.rustup" "$CACHE_TARGET/.rustup"
+  cp -pR "$HOME/.cargo" "$CACHE_TARGET/.cargo"
+  cp -pR "$HOME/.rustup" "$CACHE_TARGET/.rustup"
 }
 
 case "$OSTYPE" in
