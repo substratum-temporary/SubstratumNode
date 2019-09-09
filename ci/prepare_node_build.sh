@@ -4,4 +4,5 @@ CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 #PARENT_DIR="$1"
 
 echo "Path: $PATH"
+rustc --version
 "$CI_DIR/format.sh"
