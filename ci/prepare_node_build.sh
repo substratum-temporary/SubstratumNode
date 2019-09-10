@@ -4,5 +4,7 @@ CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 #PARENT_DIR="$1"
 
 echo "Path: $PATH"
+echo "Directory containing rustc:"
+ls -l "$(dirname "$(which rustc)")"
 rustc --version
 "$CI_DIR/format.sh"
