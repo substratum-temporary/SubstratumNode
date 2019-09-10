@@ -8,6 +8,8 @@ if [[ "$JENKINS_VERSION" != "" ]]; then
 else
   NODE_PARENT_DIR=""
   WORKSPACE="$("$CI_DIR/../../ci/bashify_workspace.sh" "$1")"
+  CARGO_HOME="$WORKSPACE/.cargo"
+  RUSTUP_HOME="$WORKSPACE/.rustup"
   PATH="$WORKSPACE/.cargo/bin:$PATH"
   chmod +x "$WORKSPACE"/.cargo/bin/* || echo "Couldn't make .cargo/bin files executable"
 fi
