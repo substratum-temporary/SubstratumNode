@@ -25,8 +25,8 @@ steps:
     inputs:
       key: |
         "$(rust_version)" | $(Agent.OS) | "v3.6"
-      path: $(Pipeline.Workspace)/.cargo
-      cacheHitVar: NODE_TOOLCHAIN_RESTORED
+      path: $(Pipeline.Workspace)/toolchains
+      cacheHitVar: NODE_TOOLCHAINS_RESTORED
 
   - task: NodeTool@0
     inputs:
@@ -38,7 +38,7 @@ steps:
       customCommand: 'install -g yarn'
 
   - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)' '$(rust_version)'
-    condition: ne(variables.NODE_TOOLCHAIN_RESTORED, 'true')
+    condition: ne(variables.NODE_TOOLCHAINS_RESTORED, 'true')
     displayName: "Install Node toolchain"
 
   - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'

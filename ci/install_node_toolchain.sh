@@ -36,13 +36,10 @@ function common() {
   "$HOME/.cargo/bin/rustup" component add clippy
   "$HOME/.cargo/bin/cargo" install sccache
 
-  echo "Contents of HOME $HOME, to be copied to CACHE_TARGET $CACHE_TARGET:"
-  ls -la "$HOME"
-  cp -vpR "$HOME/.cargo" "$CACHE_TARGET/.cargo"
-  chmod +x "$CACHE_TARGET"/.cargo/bin/*
-  cp -vpR "$HOME/.rustup" "$CACHE_TARGET/.rustup"
-  echo "Contents of CACHE_TARGET $CACHE_TARGET after copy:"
-  ls -la "$CACHE_TARGET"
+  mkdir -p "$CACHE_TARGET/toolchains"
+  cp -vpR "$HOME/.cargo" "$CACHE_TARGET"/toolchains/.cargo
+  chmod +x "$CACHE_TARGET"/toolchains/.cargo/bin/*
+  cp -vpR "$HOME/.rustup" "$CACHE_TARGET"/toolchains/.rustup
 }
 
 case "$OSTYPE" in

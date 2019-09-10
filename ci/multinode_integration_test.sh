@@ -8,10 +8,10 @@ if [[ "$JENKINS_VERSION" != "" ]]; then
 else
   PARENT_DIR=""
   WORKSPACE="$("$CI_DIR/../../ci/bashify_workspace.sh" "$1")"
-  RUSTUP_HOME="$WORKSPACE/.rustup"
-  CARGO_HOME="$WORKSPACE/.cargo"
-  PATH="$WORKSPACE/.cargo/bin:$PATH"
-  chmod +x "$WORKSPACE"/.cargo/bin/* || echo "Couldn't make .cargo/bin files executable"
+  RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
+  CARGO_HOME="$WORKSPACE/toolchains/.cargo"
+  PATH="$WORKSPACE/toolchains/.cargo/bin:$PATH"
+  chmod +x "$WORKSPACE"/toolchains/.cargo/bin/* || echo "Couldn't make .cargo/bin files executable"
 fi
 
 case "$OSTYPE" in
