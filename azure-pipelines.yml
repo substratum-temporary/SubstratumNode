@@ -43,7 +43,7 @@ steps:
   - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
     displayName: "Install NodeUI test toolchain"
 
-  - bash: ci/prepare_node_build.sh
+  - bash: PATH=$(Pipeline.Workspace)/.cargo/bin:$PATH ci/prepare_node_build.sh
     displayName: "Prepare Node build"
   - bash: PATH=$(Pipeline.Workspace)/.cargo/bin:$PATH ci/sccache.sh && PATH=$(Pipeline.Workspace)/.cargo/bin:$PATH node/ci/all.sh && PATH=$(Pipeline.Workspace)/.cargo/bin:$PATH dns_utility/ci/all.sh
     displayName: "Build Node and run tests"
