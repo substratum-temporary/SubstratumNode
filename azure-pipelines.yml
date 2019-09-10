@@ -24,7 +24,7 @@ steps:
   - task: CacheBeta@0
     inputs:
       key: |
-        "$(rust_version)" | $(Agent.OS) | "v3.4"
+        "$(rust_version)" | $(Agent.OS) | "v3.5"
       path: $(Pipeline.Workspace)/.cargo
       cacheHitVar: NODE_TOOLCHAIN_RESTORED
 

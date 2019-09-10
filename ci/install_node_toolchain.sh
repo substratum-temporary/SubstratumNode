@@ -36,6 +36,8 @@ function common() {
   "$HOME/.cargo/bin/rustup" component add clippy
   "$HOME/.cargo/bin/cargo" install sccache
 
+  echo "Contents of HOME $HOME, to be copied to CACHE_TARGET $CACHE_TARGET:"
+  ls -la "$HOME"
   cp -pR "$HOME/.cargo" "$CACHE_TARGET/.cargo"
   chmod +x "$CACHE_TARGET"/.cargo/bin/*
   cp -pR "$HOME/.rustup" "$CACHE_TARGET/.rustup"
