@@ -3,7 +3,7 @@
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 #PARENT_DIR="$1"
 
-WORKSPACE="$("$CI_DIR"/bashify_workspace "$1")"
+WORKSPACE="$("$CI_DIR"/bashify_workspace.sh "$1")"
 PATH="$WORKSPACE/.cargo/bin:$PATH"
 chmod +x "$WORKSPACE"/.cargo/bin/* || echo "Couldn't make .cargo/bin files executable"
 

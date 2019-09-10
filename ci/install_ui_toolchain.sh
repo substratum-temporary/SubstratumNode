@@ -2,7 +2,7 @@
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-WORKSPACE="$("$CI_DIR"/bashify_workspace "$1")"
+WORKSPACE="$("$CI_DIR"/bashify_workspace.sh "$1")"
 
 if [[ "$2" == "" ]]; then
   NODE_VERSION="10.16.3"
