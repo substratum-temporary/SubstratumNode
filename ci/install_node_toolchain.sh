@@ -30,6 +30,7 @@ function common() {
   "$HOME/.cargo/bin/cargo" install sccache
 
   cp -pR "$HOME/.cargo" "$CACHE_TARGET/.cargo"
+  chmod -R +x "$CACHE_TARGET/.cargo/bin/*"
   cp -pR "$HOME/.rustup" "$CACHE_TARGET/.rustup"
 }
 
