@@ -12,5 +12,9 @@ chmod +x "$WORKSPACE"/.cargo/bin/* || echo "Couldn't make .cargo/bin files execu
 echo "Path: $PATH"
 echo "First directory in PATH:"
 ls -l "$(echo "$PATH" | cut -d: -f1)"
+echo "Contents of RUSTUP_HOME:"
+ls -l "$RUSTUP_HOME"
+echo "settings.toml:"
+cat "$RUSTUP_HOME"/settings.toml
 rustc --version
 "$CI_DIR/format.sh"
