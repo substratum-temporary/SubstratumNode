@@ -19,5 +19,7 @@ ls -la "$RUSTUP_HOME"
 echo "settings.toml:"
 cat "$RUSTUP_HOME"/settings.toml
 echo "which rustc: $(which rustc)"
+echo "which rustup: $(which rustup)"
 rustc --version
+rustup show
 "$CI_DIR/format.sh"
