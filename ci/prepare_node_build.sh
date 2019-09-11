@@ -18,5 +18,6 @@ echo "Contents of RUSTUP_HOME:"
 ls -la "$RUSTUP_HOME"
 echo "settings.toml:"
 cat "$RUSTUP_HOME"/settings.toml
+echo "which rust: $(which rust)"
 rustc --version
 "$CI_DIR/format.sh"
