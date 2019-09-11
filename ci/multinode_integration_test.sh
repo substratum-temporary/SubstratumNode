@@ -7,7 +7,7 @@ if [[ "$JENKINS_VERSION" != "" ]]; then
   WORKSPACE="$HOME"
 else
   PARENT_DIR=""
-  WORKSPACE="$("$CI_DIR/../../ci/bashify_workspace.sh" "$1")"
+  WORKSPACE="$("$CI_DIR/bashify_workspace.sh" "$1")"
   RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
   CARGO_HOME="$WORKSPACE/toolchains/.cargo"
   PATH="$WORKSPACE/toolchains/.cargo/bin:$PATH"

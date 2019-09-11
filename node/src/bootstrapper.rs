@@ -1024,9 +1024,9 @@ mod tests {
             .expect("Couldn't compile regular expression");
         let captured_descriptor = regex
             .captures(stdout_dump.as_str())
-            .unwrap()
+            .expect("Couldn't find local descriptor in stdout")
             .get(1)
-            .unwrap()
+            .expect("Local descriptor line has no descriptor")
             .as_str();
         assert_eq!(captured_descriptor, expected_descriptor);
         TestLogHandler::new().exists_log_containing(
