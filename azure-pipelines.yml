@@ -15,7 +15,7 @@ strategy:
 variables:
   rust_version: "1.37.0"
   node_version: "10.16.3"
-  AZP_CACHING_TAR: true
+  AZP_CACHING_TAR: true # requires minimum agent version of 2.157.0 (rolling out Palindrome Week)
 
 pool:
   vmImage: $(imageName)

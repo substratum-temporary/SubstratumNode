@@ -16,12 +16,12 @@ case "$OSTYPE" in
         ;;
     Darwin | darwin*)
         echo "macOS"
-        sudo ci/run_integration_tests.sh sudo
+        sudo -E ci/run_integration_tests.sh sudo
         ci/run_integration_tests.sh user
         ;;
     linux-gnu)
         echo "Linux"
-        sudo ci/run_integration_tests.sh sudo
+        sudo -E ci/run_integration_tests.sh sudo
         ci/run_integration_tests.sh user
         ;;
     *)
