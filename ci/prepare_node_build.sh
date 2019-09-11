@@ -4,8 +4,8 @@ CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 #PARENT_DIR="$1"
 
 WORKSPACE="$("$CI_DIR"/bashify_workspace.sh "$1")"
-CARGO_HOME="$WORKSPACE/toolchains/.cargo"
-RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
+export CARGO_HOME="$WORKSPACE/toolchains/.cargo"
+export RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
 PATH="$WORKSPACE/toolchains/.cargo/bin:$PATH"
 chmod +x "$WORKSPACE"/toolchains/.cargo/bin/* || echo "Couldn't make .cargo/bin files executable"
 
