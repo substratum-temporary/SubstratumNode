@@ -8,8 +8,8 @@ if [[ "$JENKINS_VERSION" != "" ]]; then
 else
   DNS_UTILITY_PARENT_DIR=""
   WORKSPACE="$("$CI_DIR/../../ci/bashify_workspace.sh" "$1")"
-  RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
-  CARGO_HOME="$WORKSPACE/toolchains/.cargo"
+  export RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
+  export CARGO_HOME="$WORKSPACE/toolchains/.cargo"
   PATH="$WORKSPACE/toolchains/.cargo/bin:$PATH"
   chmod +x "$WORKSPACE"/toolchains/.cargo/bin/* || echo "Couldn't make .cargo/bin files executable"
 fi
