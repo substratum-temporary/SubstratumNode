@@ -20,6 +20,6 @@ echo "settings.toml:"
 cat "$RUSTUP_HOME"/settings.toml
 echo "which rustc: $(which rustc)"
 echo "which rustup: $(which rustup)"
-rustc --version
 rustup show
+rustc --version
 "$CI_DIR/format.sh"
