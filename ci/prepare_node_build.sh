@@ -3,9 +3,9 @@
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 #PARENT_DIR="$1"
 
-WORKSPACE="$("$CI_DIR"/bashify_workspace.sh "$1")"
-export CARGO_HOME="$WORKSPACE/toolchains/.cargo"
-export RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
+TOOLCHAIN_HOME="$("$CI_DIR"/bashify_workspace.sh "$1")"
+export CARGO_HOME="$TOOLCHAIN_HOME/toolchains/.cargo"
+export RUSTUP_HOME="$TOOLCHAIN_HOME/toolchains/.rustup"
 export PATH="$CARGO_HOME/bin:$PATH"
 chmod +x "$CARGO_HOME"/bin/* || echo "Couldn't make .cargo/bin files executable"
 find "$RUSTUP_HOME" -type f -ipath "*\/bin/*" -print0 |xargs -0 -I{} chmod +x "{}" || echo "Couldn't make .rustup/**/bin/* files executable"
@@ -13,8 +13,8 @@ find "$RUSTUP_HOME" -type f -ipath "*\/bin/*" -print0 |xargs -0 -I{} chmod +x "{
 echo "Path: $PATH"
 echo "First directory in PATH:"
 ls -la "$(echo "$PATH" | cut -d: -f1)"
-echo "Contents of WORKSPACE":
-ls -la "$WORKSPACE"
+echo "Contents of TOOLCHAIN_HOME":
+ls -la "$TOOLCHAIN_HOME"
 echo "Contents of RUSTUP_HOME:"
 ls -la "$RUSTUP_HOME"
 echo "settings.toml:"

@@ -2,7 +2,7 @@
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-WORKSPACE="$("$CI_DIR"/bashify_workspace.sh "$1")"
+TOOLCHAIN_HOME="$("$CI_DIR"/bashify_workspace.sh "$1")"
 
 if [[ "$2" == "" ]]; then
   NODE_VERSION="10.16.3"
@@ -15,8 +15,8 @@ function install_linux() {
   rm -r "$HOME/.yarn" || echo "yarn configuration not installed"
   sudo npm install -g yarn
 
-  mkdir -p "$WORKSPACE/usr/bin"
-  cp "/usr/bin/yarn" "$WORKSPACE/usr/bin/yarn"
+  mkdir -p "$TOOLCHAIN_HOME/usr/bin"
+  cp "/usr/bin/yarn" "$TOOLCHAIN_HOME/usr/bin/yarn"
 }
 
 function install_macOS() {
@@ -24,8 +24,8 @@ function install_macOS() {
   rm -r "$HOME/.yarn" || echo "yarn configuration not installed"
   npm install -g yarn
 
-  mkdir -p "$WORKSPACE/usr/local/bin"
-  cp "/usr/local/bin/yarn" "$WORKSPACE/usr/local/bin/yarn"
+  mkdir -p "$TOOLCHAIN_HOME/usr/local/bin"
+  cp "/usr/local/bin/yarn" "$TOOLCHAIN_HOME/usr/local/bin/yarn"
 }
 
 function install_windows() {
@@ -33,12 +33,12 @@ function install_windows() {
   msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
   nvm install "$NODE_VERSION"
 
-  cp -R "$HOME/.nvm" "$WORKSPACE/.nvm"
+  cp -R "$HOME/.nvm" "$TOOLCHAIN_HOME/.nvm"
 
   rm -r "$HOME/.yarn" || echo "yarn not installed"
   npm install -g yarn
 
-  cp -R "$HOME/.yarn" "$WORKSPACE/.yarn"
+  cp -R "$HOME/.yarn" "$TOOLCHAIN_HOME/.yarn"
 }
 
 case "$OSTYPE" in
