@@ -10,8 +10,8 @@ else
   WORKSPACE="$("$CI_DIR/bashify_workspace.sh" "$1")"
   export RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
   export CARGO_HOME="$WORKSPACE/toolchains/.cargo"
-  PATH="$WORKSPACE/toolchains/.cargo/bin:$PATH"
-  chmod +x "$WORKSPACE"/toolchains/.cargo/bin/* || echo "Couldn't make .cargo/bin files executable"
+  export PATH="$CARGO_HOME/bin:$PATH"
+  chmod +x "$CARGO_HOME"/bin/* || echo "Couldn't make .cargo/bin files executable"
 fi
 
 case "$OSTYPE" in
