@@ -1,23 +1,12 @@
 #!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
-
-if [[ "$JENKINS_VERSION" != "" ]]; then
-  DNS_UTILITY_PARENT_DIR="$1"
-  WORKSPACE="$HOME"
-else
-  DNS_UTILITY_PARENT_DIR=""
-  WORKSPACE="$("$CI_DIR/../../ci/bashify_workspace.sh" "$1")"
-  export RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
-  export CARGO_HOME="$WORKSPACE/toolchains/.cargo"
-  export PATH="$CARGO_HOME/bin:$PATH"
-  chmod +x "$CARGO_HOME"/bin/* || echo "Couldn't make .cargo/bin files executable"
-  find "$RUSTUP_HOME" -type f -ipath "*\/bin/*" -print0 |xargs -0 -I{} chmod +x "{}" || echo "Couldn't make .rustup/**/bin/* files executable"
-fi
+WORKSPACE="$1"
+source "$CI_DIR"/../../ci/environment.sh "$WORKSPACE"
 
 export RUSTC_WRAPPER=sccache
 pushd "$CI_DIR/.."
 ci/lint.sh
 ci/unit_tests.sh
-ci/integration_tests.sh "$DNS_UTILITY_PARENT_DIR"
+ci/integration_tests.sh "$WORKSPACE"
 popd

@@ -4,14 +4,8 @@ CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 if [[ "$JENKINS_VERSION" != "" ]]; then
   PARENT_DIR="$1"
-  WORKSPACE="$HOME"
 else
   PARENT_DIR=""
-  WORKSPACE="$("$CI_DIR/bashify_workspace.sh" "$1")"
-  export RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
-  export CARGO_HOME="$WORKSPACE/toolchains/.cargo"
-  export PATH="$CARGO_HOME/bin:$PATH"
-  chmod +x "$CARGO_HOME"/bin/* || echo "Couldn't make .cargo/bin files executable"
 fi
 
 case "$OSTYPE" in
