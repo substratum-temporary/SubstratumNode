@@ -8,6 +8,7 @@ export CARGO_HOME="$WORKSPACE/toolchains/.cargo"
 export RUSTUP_HOME="$WORKSPACE/toolchains/.rustup"
 export PATH="$CARGO_HOME/bin:$PATH"
 chmod +x "$CARGO_HOME"/bin/* || echo "Couldn't make .cargo/bin files executable"
+find "$RUSTUP_HOME" -type f -ipath "*\/bin/*" -print0 |xargs -0 -I{} chmod +x || echo "Couldn't make .rustup/bin,.rustup/**/bin/* files executable"
 
 echo "Path: $PATH"
 echo "First directory in PATH:"
