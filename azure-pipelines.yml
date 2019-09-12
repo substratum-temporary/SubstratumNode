@@ -38,7 +38,7 @@ steps:
       customCommand: 'install -g yarn'
 
   - script: 'netsh advfirewall set allprofiles state off'
-    condition: eq($(Agent.OS), 'Windows_NT')
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: "Disable Firewall on Windows Agents"
 
   - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)' '$(rust_version)'
