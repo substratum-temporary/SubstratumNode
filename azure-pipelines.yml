@@ -44,9 +44,11 @@ steps:
   - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
     displayName: "Install NodeUI test toolchain"
 
-  - script: 'netsh advfirewall set allprofiles state off'
+  - script: |
+      netsh advfirewall set allprofiles state off
+      net stop sharedaccess
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: "Disable Firewall on Windows Agents"
+    displayName: "Disable Annoying Windows Services"
 
   - bash: ci/prepare_node_build.sh '$(Pipeline.Workspace)'
     displayName: "Prepare Node build"
