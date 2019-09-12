@@ -46,7 +46,8 @@ steps:
 
   - script: |
       netsh advfirewall set allprofiles state off
-      net stop sharedaccess
+      net stop sharedaccess || echo ICS already disabled
+      net stop W3SVC || echo W3SVC service already disabled
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: "Disable Annoying Windows Services"
 
