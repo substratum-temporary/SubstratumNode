@@ -2,10 +2,8 @@
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
-TOOLCHAIN_HOME="$1"
 
 export PATH="$PATH:$HOME/.cargo/bin"
-source "$CI_DIR"/../../ci/environment.sh "$TOOLCHAIN_HOME"
 
 export RUST_BACKTRACE=full
 
@@ -22,9 +20,8 @@ if [ "HOST_NODE_PARENT_DIR" == "" ]; then
     export HOST_NODE_PARENT_DIR="$CI_DIR/../.."
 fi
 
-pushd "$CI_DIR/.."
-pushd "$CI_DIR/../../port_exposer" "$TOOLCHAIN_HOME"
-ci/all.sh
+pushd "$CI_DIR/../../port_exposer"
+ci/all.sh "$TOOLCHAIN_HOME"
 popd
 
 pushd "$CI_DIR/../../mock_rest_server"
