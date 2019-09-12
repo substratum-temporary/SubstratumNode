@@ -4,7 +4,7 @@
 if [[ "$1" == "" ]]; then
   WORKSPACE="$HOME"
 else
-  WORKSPACE=$(echo "$1" | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
+  WORKSPACE=$(echo "$1" | sed 's|\\|/|g; s|^\([A-Za-z]\):|/\1|g')
 fi
 
 echo "$WORKSPACE"
