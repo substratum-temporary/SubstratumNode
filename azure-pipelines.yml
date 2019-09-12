@@ -44,10 +44,10 @@ steps:
   - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
     displayName: "Install NodeUI test toolchain"
 
-#  - bash: ci/prepare_node_build.sh '$(Pipeline.Workspace)'
-#    displayName: "Prepare Node build"
-#  - bash: ci/sccache.sh '$(Pipeline.Workspace)' && node/ci/all.sh '$(Pipeline.Workspace)' && dns_utility/ci/all.sh '$(Pipeline.Workspace)'
-#    displayName: "Build Node and run tests"
+  - bash: ci/prepare_node_build.sh '$(Pipeline.Workspace)'
+    displayName: "Prepare Node build"
+  - bash: ci/sccache.sh '$(Pipeline.Workspace)' && node/ci/all.sh '$(Pipeline.Workspace)' && dns_utility/ci/all.sh '$(Pipeline.Workspace)'
+    displayName: "Build Node and run tests"
 
 #  - bash: ci/multinode_integration_test.sh '$(Pipeline.Workspace)'
 #    displayName: "Run multinode integration tests"

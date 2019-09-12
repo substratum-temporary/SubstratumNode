@@ -7,7 +7,8 @@ source "$CI_DIR"/../../ci/environment.sh "$TOOLCHAIN_HOME"
 
 export RUSTC_WRAPPER=sccache
 pushd "$CI_DIR/.."
-ci/lint.sh
-ci/unit_tests.sh
-ci/integration_tests.sh "$TOOLCHAIN_HOME"
+ci/build.sh
+#ci/lint.sh
+#ci/unit_tests.sh
+#ci/integration_tests.sh "$TOOLCHAIN_HOME"
 popd
