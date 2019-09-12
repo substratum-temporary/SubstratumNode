@@ -37,9 +37,9 @@ function common() {
   "$HOME/.cargo/bin/cargo" install sccache
 
   mkdir -p "$CACHE_TARGET/toolchains"
-  cp -vpR "$HOME/.cargo" "$CACHE_TARGET"/toolchains/.cargo
+  cp -pR "$HOME/.cargo" "$CACHE_TARGET"/toolchains/.cargo
   chmod +x "$CACHE_TARGET"/toolchains/.cargo/bin/*
-  cp -vpR "$HOME/.rustup" "$CACHE_TARGET"/toolchains/.rustup
+  cp -pR "$HOME/.rustup" "$CACHE_TARGET"/toolchains/.rustup
 }
 
 case "$OSTYPE" in
