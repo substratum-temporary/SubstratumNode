@@ -23,7 +23,7 @@ if [ "HOST_NODE_PARENT_DIR" == "" ]; then
 fi
 
 pushd "$CI_DIR/.."
-pushd "$CI_DIR/../../port_exposer"
+pushd "$CI_DIR/../../port_exposer" "$TOOLCHAIN_HOME"
 ci/all.sh
 popd
 
