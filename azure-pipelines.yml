@@ -63,3 +63,10 @@ steps:
     displayName: "Prepare NodeUI build"
   - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
     displayName: "Build NodeUI and run tests"
+
+  - bash: ci/publish_results.sh
+    env:
+      CURRENT_PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
+      CURRENT_BUILD_BRANCH: $(Build.SourceBranch)
+    displayName: "Publish Results"
+    condition: failed()
