@@ -56,16 +56,15 @@ steps:
   - bash: ci/sccache.sh '$(Pipeline.Workspace)' && node/ci/all.sh '$(Pipeline.Workspace)' && dns_utility/ci/all.sh '$(Pipeline.Workspace)'
     displayName: "Build Node and run tests"
 
-    #  - bash: ci/multinode_integration_test.sh '$(Pipeline.Workspace)'
-  - bash: echo "This is only here to fail the build" && exit 99
+  - bash: ci/multinode_integration_test.sh '$(Pipeline.Workspace)'
     displayName: "Run multinode integration tests"
 
-#  - bash: ci/prepare_node_ui_build.sh
-#    displayName: "Prepare NodeUI build"
-#  - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
-#    displayName: "Build NodeUI and run tests"
+  - bash: ci/prepare_node_ui_build.sh
+    displayName: "Prepare NodeUI build"
+  - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
+    displayName: "Build NodeUI and run tests"
 
-  - bash: ci/collect_results.sh && ci/publish_results.sh
+  - bash: ci/collect_results.sh && ci/publish_results.sh 'Failed'
     env:
       GITHUB_TOKEN: $(GITHUB_TOKEN)
     displayName: "Collect and publish results"
