@@ -36,6 +36,7 @@ pushd ./docker
 ./build.sh
 popd
 
+pushd "$CI_DIR/.."
 export RUSTFLAGS="-D warnings -Anon-snake-case"
 cargo test --release -- --nocapture --test-threads=1
 popd
