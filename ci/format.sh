@@ -3,7 +3,6 @@
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 echo "PATH inside format.sh: $PATH"
-echo "Directory of ~/.cargo: $(ls -lR /Users/vsts/agent/2.155.1/work/1/.cargo/)"
 
 final_exit_code=0
 
