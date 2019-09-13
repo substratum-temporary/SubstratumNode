@@ -60,16 +60,13 @@ steps:
   - bash: echo "This is only here to fail the build" && exit 99
     displayName: "Run multinode integration tests"
 
-  - bash: ci/prepare_node_ui_build.sh
-    displayName: "Prepare NodeUI build"
-  - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
-    displayName: "Build NodeUI and run tests"
+#  - bash: ci/prepare_node_ui_build.sh
+#    displayName: "Prepare NodeUI build"
+#  - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
+#    displayName: "Build NodeUI and run tests"
 
-  - bash: |
-      ci/collect_results.sh
-      ci/publish_results.sh
+  - bash: ci/collect_results.sh && ci/publish_results.sh
     env:
-      CURRENT_PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
-      CURRENT_BUILD_BRANCH: $(Build.SourceBranch)
-    displayName: "Publish Results"
+      GITHUB_TOKEN: $(GITHUB_TOKEN)
+    displayName: "Collect and publish results"
     condition: failed()
