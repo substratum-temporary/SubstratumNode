@@ -13,8 +13,8 @@ if [[ "$SYSTEM_PULLREQUEST_SOURCEBRANCH" == "" ]]; then
 else
   RESULTS_LABEL="$SYSTEM_PULLREQUEST_SOURCEBRANCH"
 fi
-NEW_LINE="* $(date -u) - $RESULTS_LABEL - $STATUS ($AGENT_OS): [generated.zip](https://github.com/substratum-temporary/SubstratumNode-results/blob/master/results/$RESULTS_LABEL/generated.zip?raw=true)"
-cat README.md.old | grep -v "$RESULTS_LABEL" > README.md.clean
+NEW_LINE="* $(date -u) - $RESULTS_LABEL ($AGENT_OS) - $STATUS: [generated.zip](https://github.com/substratum-temporary/SubstratumNode-results/blob/master/results/$RESULTS_LABEL/generated.zip?raw=true)"
+cat README.md.old | grep -v "$RESULTS_LABEL ($AGENT_OS)" > README.md.clean
 cat README.md.clean | sed -e '/\(Results Marker\)/q' > README.md
 echo "$NEW_LINE" >> README.md
 cat README.md.clean | sed -n '/\(Results Marker\)/,$p' | tail -n+2 >> README.md
@@ -22,7 +22,7 @@ cat README.md.clean | sed -n '/\(Results Marker\)/,$p' | tail -n+2 >> README.md
 mkdir -p "results/$RESULTS_LABEL"
 cp ../generated.zip "results/$RESULTS_LABEL/generated.zip"
 git add README.md "results/$RESULTS_LABEL/generated.zip"
-git commit -m "Latest results for $RESULTS_LABEL"
+git commit -m "Latest results for $RESULTS_LABEL $(AGENT_OS)"
 git push
 
 popd
