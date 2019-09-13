@@ -13,7 +13,7 @@ if [[ "$SYSTEM_PULLREQUEST_SOURCEBRANCH" == "" ]]; then
 else
   RESULTS_LABEL="$SYSTEM_PULLREQUEST_SOURCEBRANCH"
 fi
-NEW_LINE="* $(date -u) - $RESULTS_LABEL - $STATUS: [generated.zip](https://github.com/substratum-temporary/SubstratumNode-results/blob/master/results/$RESULTS_LABEL/generated.zip?raw=true)"
+NEW_LINE="* $(date -u) - $RESULTS_LABEL - $STATUS ($AGENT_OS): [generated.zip](https://github.com/substratum-temporary/SubstratumNode-results/blob/master/results/$RESULTS_LABEL/generated.zip?raw=true)"
 cat README.md.old | grep -v "$RESULTS_LABEL" > README.md.clean
 cat README.md.clean | sed -e '/\(Results Marker\)/q' > README.md
 echo "$NEW_LINE" >> README.md
