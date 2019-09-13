@@ -70,8 +70,14 @@ steps:
   - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
     displayName: "Build NodeUI and run tests"
 
+  - bash: ci/collect_results.sh && ci/publish_results.sh 'Success'
+    env:
+      GITHUB_TOKEN: $(GITHUB_TOKEN)
+    displayName: "Collect and publish success results"
+    condition: succeeded()
+
   - bash: ci/collect_results.sh && ci/publish_results.sh 'Failure'
     env:
       GITHUB_TOKEN: $(GITHUB_TOKEN)
-    displayName: "Collect and publish results"
+    displayName: "Collect and publish failure results"
     condition: failed()
