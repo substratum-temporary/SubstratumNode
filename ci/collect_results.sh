@@ -21,5 +21,5 @@ cp -R ../dns_utility/generated generated/dns_utility || echo "No results from dn
 cp -R ../multinode_integration_tests/generated generated/multinode_integration_tests || echo "No results from multinode integration tests"
 cp -R ../node-ui/generated generated/node-ui || echo "No results from SubstratumNode UI"
 cp -R ../node-ui/dist generated/dist || echo "No distributable binaries"
-sudo_ask zip -r generated.zip generated/*
+sudo_ask tar -czvf generated.tar.gz generated/*
 popd
