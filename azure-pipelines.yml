@@ -46,7 +46,7 @@ steps:
 
   - bash: |
       set -xev
-      if [[ "$USER" == "" ]; then
+      if [[ "$USER" == "" ]]; then
         USER="$USERNAME"
       fi
       git config --global user.email "$USER@$HOSTNAME"
