@@ -44,11 +44,10 @@ steps:
   - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
     displayName: "Install NodeUI test toolchain"
 
-  - script: |
-      git config --global user.email "linux.agent@dev.azure.com"
-      git config --global user.name "Azure Linux Agent"
-    condition: eq( variables['Agent.OS'], 'Linux' )
-    displayName: "Configure git for Linux"
+  - bash: |
+      git config --global user.email "$USER@$HOSTNAME"
+      git config --global user.name "$USER"
+    displayName: "Configure git"
 
   - script: |
       netsh advfirewall set allprofiles state off
