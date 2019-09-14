@@ -45,6 +45,7 @@ steps:
     displayName: "Install NodeUI test toolchain"
 
   - bash: |
+      set -xev
       git config --global user.email "$USER@$HOSTNAME"
       git config --global user.name "$USER"
     displayName: "Configure git"
