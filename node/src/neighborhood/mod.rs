@@ -48,8 +48,7 @@ use crate::sub_lib::route::RouteSegment;
 use crate::sub_lib::set_consuming_wallet_message::SetConsumingWalletMessage;
 use crate::sub_lib::stream_handler_pool::DispatcherNodeQueryResponse;
 use crate::sub_lib::ui_gateway::{UiCarrierMessage, UiMessage};
-use crate::sub_lib::utils::regenerate_signed_gossip;
-use crate::sub_lib::utils::NODE_MAILBOX_CAPACITY;
+use crate::sub_lib::utils::{node_descriptor_delimiter, NODE_MAILBOX_CAPACITY};
 use crate::sub_lib::wallet::Wallet;
 use actix::Actor;
 use actix::Addr;
@@ -65,7 +64,7 @@ use neighborhood_database::NeighborhoodDatabase;
 use node_record::NodeRecord;
 use std::cmp::Ordering;
 use std::convert::TryFrom;
-use std::net::IpAddr;
+use std::net::{IpAddr, SocketAddr};
 
 pub struct Neighborhood {
     cryptde: &'static dyn CryptDE,
@@ -118,13 +117,14 @@ impl Handler<StartMessage> for Neighborhood {
             .gossip_producer
             .produce_debut(&self.neighborhood_database);
         self.initial_neighbors.iter().for_each(|neighbor| {
-            let node_descriptor = match NodeDescriptor::from_str(self.cryptde, neighbor) {
-                Ok(nd) => nd,
-                Err(e) => panic!(
-                    "--neighbors must be <public key>:<ip address>:<port>;<port>..., not '{}'",
-                    e
-                ),
-            };
+            let node_descriptor = NodeDescriptor::from_str(self.cryptde, neighbor, self.chain_id)
+                .unwrap_or_else(|e| {
+                    panic!(
+                        "--neighbors must be <public key>{}<ip address>:<port>;<port>..., not '{}'",
+                        node_descriptor_delimiter(self.chain_id),
+                        e
+                    );
+                });
             self.hopper_no_lookup
                 .as_ref()
                 .expect("unbound hopper")
@@ -146,7 +146,7 @@ impl Handler<StartMessage> for Neighborhood {
                     (
                         &node_descriptor.public_key,
                         &Some(node_descriptor.node_addr.clone())
-                    )
+                    ),
                 )
             );
         });
@@ -532,7 +532,7 @@ impl Neighborhood {
                     self.neighborhood_database.root(),
                     self.neighborhood_database
                         .node_by_key(*neighbor)
-                        .expect("Node magically disappeared")
+                        .expect("Node magically disappeared"),
                 )
             );
         });
@@ -875,7 +875,7 @@ impl Neighborhood {
             "Sent Gossip: {}",
             gossip.to_dot_graph(
                 self.neighborhood_database.root(),
-                (&target_key, &Some(target_node_addr))
+                (&target_key, &Some(target_node_addr)),
             )
         );
     }
@@ -901,43 +901,52 @@ impl Neighborhood {
         if msg.stream_type != RemovedStreamType::Clandestine {
             panic!("Neighborhood should never get ShutdownStreamMsg about non-clandestine stream")
         }
-        let (neighbor_key, neighbor_node_addr) = match self
-            .neighborhood_database
-            .node_by_ip(&msg.peer_addr.ip())
-        {
+        let neighbor_key = match self.neighborhood_database.node_by_ip(&msg.peer_addr.ip()) {
             None => {
-                debug!(self.logger, "Received shutdown notification for stream to {}, but no neighbor found there - ignoring", msg.peer_addr);
+                warning!(self.logger, "Received shutdown notification for stream to {}, but no Node with that IP is in the database - ignoring", msg.peer_addr.ip());
                 return;
             }
-            Some(n) => (
-                n.public_key().clone(),
-                n.node_addr_opt().expect("NodeAddr suddenly disappeared"),
-            ),
+            Some(n) => (n.public_key().clone()),
         };
-        if !neighbor_node_addr.ports().contains(&msg.peer_addr.port()) {
-            debug!(self.logger, "Received shutdown notification for stream to {}, but no neighbor found there - ignoring", msg.peer_addr);
-            return;
-        }
-        match self.neighborhood_database.remove_neighbor(&neighbor_key) {
+        self.remove_neighbor(&neighbor_key, &msg.peer_addr);
+    }
+
+    fn remove_neighbor(&mut self, neighbor_key: &PublicKey, peer_addr: &SocketAddr) {
+        match self.neighborhood_database.remove_neighbor(neighbor_key) {
             Err(_) => panic!("Node suddenly disappeared"),
             Ok(true) => {
                 debug!(
                     self.logger,
-                    "Received shutdown notification for {} at {}", neighbor_key, msg.peer_addr
+                    "Received shutdown notification for {} at {}: removing neighborship",
+                    neighbor_key,
+                    peer_addr.ip()
                 );
                 self.gossip_to_neighbors()
             }
             Ok(false) => {
-                debug!(self.logger, "Received shutdown notification for {} at {}, but that Node is already isolated - ignoring", neighbor_key, msg.peer_addr);
+                debug!(self.logger, "Received shutdown notification for {} at {}, but that Node is no neighbor - ignoring", neighbor_key, peer_addr.ip());
             }
         };
     }
 }
 
+pub fn regenerate_signed_gossip(
+    inner: &NodeRecordInner,
+    cryptde: &dyn CryptDE, // Must be the correct CryptDE for the Node from which inner came: used for signing
+) -> (PlainData, CryptData) {
+    let signed_gossip =
+        PlainData::from(serde_cbor::ser::to_vec(&inner).expect("Serialization failed"));
+    let signature = match cryptde.sign(&signed_gossip) {
+        Ok(sig) => sig,
+        Err(e) => unimplemented!("Signing error: {:?}", e),
+    };
+    (signed_gossip, signature)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::blockchain::blockchain_interface::{contract_address, DEFAULT_CHAIN_ID};
+    use crate::blockchain::blockchain_interface::contract_address;
     use crate::neighborhood::gossip::Gossip;
     use crate::neighborhood::gossip::GossipBuilder;
     use crate::neighborhood::neighborhood_test_utils::*;
@@ -962,7 +971,7 @@ mod tests {
     use crate::test_utils::vec_to_set;
     use crate::test_utils::{assert_contains, make_wallet};
     use crate::test_utils::{assert_matches, make_meaningless_route};
-    use crate::test_utils::{cryptde, make_paying_wallet};
+    use crate::test_utils::{cryptde, make_paying_wallet, DEFAULT_CHAIN_ID};
     use actix::dev::{MessageResponse, ResponseChannel};
     use actix::Message;
     use actix::Recipient;
@@ -995,7 +1004,7 @@ mod tests {
                         public_key: neighbor.public_key().clone(),
                         node_addr: neighbor.node_addr_opt().unwrap().clone(),
                     }
-                    .to_string(cryptde)],
+                    .to_string(cryptde, DEFAULT_CHAIN_ID)],
                     local_ip_addr: sentinel_ip_addr(),
                     clandestine_port_list: vec![0],
                     rate_pack: rate_pack(100),
@@ -1034,7 +1043,7 @@ mod tests {
     }
 
     #[test]
-    fn node_with_no_neighbor_configs_ignores_start_messag() {
+    fn node_with_no_neighbor_configs_ignores_start_message() {
         init_test_logging();
         let cryptde = cryptde();
         let earning_wallet = make_wallet("earning");
@@ -1122,12 +1131,12 @@ mod tests {
                             public_key: one_neighbor_node.public_key().clone(),
                             node_addr: one_neighbor_node.node_addr_opt().unwrap().clone(),
                         }
-                        .to_string(cryptde),
+                        .to_string(cryptde, DEFAULT_CHAIN_ID),
                         NodeDescriptor {
                             public_key: another_neighbor_node.public_key().clone(),
                             node_addr: another_neighbor_node.node_addr_opt().unwrap().clone(),
                         }
-                        .to_string(cryptde),
+                        .to_string(cryptde, DEFAULT_CHAIN_ID),
                     ],
                     local_ip_addr: this_node_addr.ip_addr(),
                     clandestine_port_list: this_node_addr.ports().clone(),
@@ -1158,14 +1167,14 @@ mod tests {
             vec![
                 NodeDescriptor {
                     public_key: one_neighbor_node.public_key().clone(),
-                    node_addr: one_neighbor_node.node_addr_opt().unwrap()
+                    node_addr: one_neighbor_node.node_addr_opt().unwrap(),
                 }
-                .to_string(cryptde),
+                .to_string(cryptde, DEFAULT_CHAIN_ID),
                 NodeDescriptor {
                     public_key: another_neighbor_node.public_key().clone(),
-                    node_addr: another_neighbor_node.node_addr_opt().unwrap()
+                    node_addr: another_neighbor_node.node_addr_opt().unwrap(),
                 }
-                .to_string(cryptde)
+                .to_string(cryptde, DEFAULT_CHAIN_ID)
             ]
         );
     }
@@ -1203,7 +1212,7 @@ mod tests {
                             &vec![1234, 2345],
                         ),
                     }
-                    .to_string(cryptde)],
+                    .to_string(cryptde, DEFAULT_CHAIN_ID)],
                     local_ip_addr: IpAddr::from_str("5.4.3.2").unwrap(),
                     clandestine_port_list: vec![5678],
                     rate_pack: rate_pack(100),
@@ -1288,7 +1297,7 @@ mod tests {
                             &vec![1234, 2345],
                         ),
                     }
-                    .to_string(cryptde)],
+                    .to_string(cryptde, DEFAULT_CHAIN_ID)],
                     local_ip_addr: IpAddr::from_str("5.4.3.2").unwrap(),
                     clandestine_port_list: vec![5678],
                     rate_pack: rate_pack(100),
@@ -1326,7 +1335,7 @@ mod tests {
                         public_key: node_record.public_key().clone(),
                         node_addr: node_record.node_addr_opt().unwrap().clone(),
                     }
-                    .to_string(cryptde)],
+                    .to_string(cryptde, DEFAULT_CHAIN_ID)],
                     local_ip_addr: node_record.node_addr_opt().as_ref().unwrap().ip_addr(),
                     clandestine_port_list: node_record
                         .node_addr_opt()
@@ -2277,7 +2286,7 @@ mod tests {
                     encodex(
                         cryptde(),
                         full_neighbor.public_key(),
-                        &MessageType::Gossip(gossip.clone())
+                        &MessageType::Gossip(gossip.clone()),
                     )
                     .unwrap()
                 ),
@@ -2286,7 +2295,7 @@ mod tests {
                     encodex(
                         cryptde(),
                         half_neighbor.public_key(),
-                        &MessageType::Gossip(gossip.clone())
+                        &MessageType::Gossip(gossip.clone()),
                     )
                     .unwrap()
                 ),
@@ -2355,7 +2364,7 @@ mod tests {
             debut_gossip,
             match decodex::<MessageType>(
                 &CryptDENull::from(debut_node.public_key(), DEFAULT_CHAIN_ID),
-                &package.payload
+                &package.payload,
             ) {
                 Ok(MessageType::Gossip(g)) => g,
                 x => panic!("Expected Gossip, but found {:?}", x),
@@ -2565,7 +2574,7 @@ mod tests {
                         public_key: neighbor_inside.public_key().clone(),
                         node_addr: neighbor_inside.node_addr_opt().unwrap().clone(),
                     }
-                    .to_string(cryptde)],
+                    .to_string(cryptde, DEFAULT_CHAIN_ID)],
                     local_ip_addr: IpAddr::from_str("5.4.3.2").unwrap(),
                     clandestine_port_list: vec![1234],
                     rate_pack: rate_pack(100),
@@ -2688,7 +2697,7 @@ mod tests {
             public_key: node_record_ref.public_key().clone(),
             node_addr: node_record_ref.node_addr_opt().unwrap().clone(),
         }
-        .to_string(cryptde)
+        .to_string(cryptde, DEFAULT_CHAIN_ID)
     }
 
     #[test]
@@ -2737,7 +2746,7 @@ mod tests {
         let consuming_wallet = Some(make_paying_wallet(b"consuming"));
         let (recorder, awaiter, recording_arc) = make_recorder();
         thread::spawn(move || {
-            let system = System::new ("neighborhood_sends_node_query_response_with_none_when_key_query_matches_no_configured_data");
+            let system = System::new("neighborhood_sends_node_query_response_with_none_when_key_query_matches_no_configured_data");
             let addr: Addr<Recorder> = recorder.start();
             let recipient: Recipient<DispatcherNodeQueryResponse> =
                 addr.recipient::<DispatcherNodeQueryResponse>();
@@ -2753,7 +2762,7 @@ mod tests {
                                 &vec![1234, 2345],
                             ),
                         }
-                        .to_string(cryptde)],
+                        .to_string(cryptde, DEFAULT_CHAIN_ID)],
                         local_ip_addr: IpAddr::from_str("5.4.3.2").unwrap(),
                         clandestine_port_list: vec![5678],
                         rate_pack: rate_pack(100),
@@ -2878,7 +2887,7 @@ mod tests {
                                 &vec![1234, 2345],
                             ),
                         }
-                        .to_string(cryptde)],
+                        .to_string(cryptde, DEFAULT_CHAIN_ID)],
                         local_ip_addr: IpAddr::from_str("5.4.3.2").unwrap(),
                         clandestine_port_list: vec![5678],
                         rate_pack: rate_pack(100),
@@ -2939,7 +2948,7 @@ mod tests {
                         public_key: node_record.public_key().clone(),
                         node_addr: node_record.node_addr_opt().unwrap().clone(),
                     }
-                    .to_string(cryptde)],
+                    .to_string(cryptde, DEFAULT_CHAIN_ID)],
                     local_ip_addr: node_record.node_addr_opt().as_ref().unwrap().ip_addr(),
                     clandestine_port_list: node_record
                         .node_addr_opt()
@@ -3005,7 +3014,7 @@ mod tests {
                         public_key: node_record.public_key().clone(),
                         node_addr: node_record.node_addr_opt().unwrap().clone(),
                     }
-                    .to_string(cryptde)],
+                    .to_string(cryptde, DEFAULT_CHAIN_ID)],
                     local_ip_addr: node_record.node_addr_opt().as_ref().unwrap().ip_addr(),
                     clandestine_port_list: node_record
                         .node_addr_opt()
@@ -3199,50 +3208,7 @@ mod tests {
         assert_eq!(subject.neighborhood_database.keys().len(), 1);
         let hopper_recording = hopper_recording_arc.lock().unwrap();
         assert_eq!(hopper_recording.len(), 0);
-        TestLogHandler::new ().exists_log_containing (&format!("DEBUG: Neighborhood: Received shutdown notification for stream to {}, but no neighbor found there - ignoring", unrecognized_socket_addr));
-    }
-
-    #[test]
-    fn handle_stream_shutdown_handles_socket_addr_with_unknown_port() {
-        init_test_logging();
-        let (hopper, _, hopper_recording_arc) = make_recorder();
-        let system = System::new("test");
-        let neighbor_node = make_node_record(3123, true);
-        let neighbor_node_addr = neighbor_node.node_addr_opt().unwrap();
-        let neighbor_node_socket_addr =
-            SocketAddr::new(neighbor_node_addr.ip_addr(), neighbor_node_addr.ports()[0]);
-        let unrecognized_socket_addr = SocketAddr::new(
-            neighbor_node_socket_addr.ip(),
-            neighbor_node_socket_addr.port() + 1,
-        );
-        let subject_node = make_global_cryptde_node_record(1345, true);
-        let mut subject = neighborhood_from_nodes(&subject_node, None);
-        subject
-            .neighborhood_database
-            .add_node(neighbor_node.clone())
-            .unwrap();
-        subject
-            .neighborhood_database
-            .add_arbitrary_full_neighbor(subject_node.public_key(), neighbor_node.public_key());
-        let peer_actors = peer_actors_builder().hopper(hopper).build();
-        subject.hopper = Some(peer_actors.hopper.from_hopper_client);
-
-        subject.handle_stream_shutdown_msg(StreamShutdownMsg {
-            peer_addr: SocketAddr::new(
-                neighbor_node_socket_addr.ip(),
-                neighbor_node_socket_addr.port() + 1,
-            ),
-            stream_type: RemovedStreamType::Clandestine,
-            report_to_counterpart: false,
-        });
-
-        System::current().stop_with_code(0);
-        system.run();
-
-        assert_eq!(subject.neighborhood_database.keys().len(), 2);
-        let hopper_recording = hopper_recording_arc.lock().unwrap();
-        assert_eq!(hopper_recording.len(), 0);
-        TestLogHandler::new ().exists_log_containing (&format!("DEBUG: Neighborhood: Received shutdown notification for stream to {}, but no neighbor found there - ignoring", unrecognized_socket_addr));
+        TestLogHandler::new().exists_log_containing(&format!("WARN: Neighborhood: Received shutdown notification for stream to {}, but no Node with that IP is in the database - ignoring", unrecognized_socket_addr.ip()));
     }
 
     #[test]
@@ -3291,13 +3257,13 @@ mod tests {
         assert_eq!(
             subject.neighborhood_database.has_half_neighbor(
                 subject_node.public_key(),
-                inactive_neighbor_node.public_key()
+                inactive_neighbor_node.public_key(),
             ),
             false
         );
         let hopper_recording = hopper_recording_arc.lock().unwrap();
         assert_eq!(hopper_recording.len(), 0);
-        TestLogHandler::new ().exists_log_containing (&format!("DEBUG: Neighborhood: Received shutdown notification for {} at {}, but that Node is already isolated - ignoring", inactive_neighbor_node.public_key(), inactive_neighbor_node_socket_addr));
+        TestLogHandler::new().exists_log_containing(&format!("DEBUG: Neighborhood: Received shutdown notification for {} at {}, but that Node is no neighbor - ignoring", inactive_neighbor_node.public_key(), inactive_neighbor_node_socket_addr.ip()));
     }
 
     #[test]
@@ -3346,16 +3312,16 @@ mod tests {
         assert_eq!(
             subject.neighborhood_database.has_half_neighbor(
                 subject_node.public_key(),
-                shutdown_neighbor_node.public_key()
+                shutdown_neighbor_node.public_key(),
             ),
             false
         );
         let hopper_recording = hopper_recording_arc.lock().unwrap();
         assert_eq!(hopper_recording.len(), 1);
         TestLogHandler::new().exists_log_containing(&format!(
-            "DEBUG: Neighborhood: Received shutdown notification for {} at {}",
+            "DEBUG: Neighborhood: Received shutdown notification for {} at {}: removing neighborship",
             shutdown_neighbor_node.public_key(),
-            shutdown_neighbor_node_socket_addr
+            shutdown_neighbor_node_socket_addr.ip()
         ));
     }
 

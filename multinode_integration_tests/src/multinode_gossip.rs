@@ -1,6 +1,5 @@
 // Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 use crate::substratum_node::SubstratumNode;
-use node_lib::blockchain::blockchain_interface::DEFAULT_CHAIN_ID;
 use node_lib::neighborhood::gossip::{Gossip, GossipNodeRecord};
 use node_lib::neighborhood::node_record::NodeRecordInner;
 use node_lib::neighborhood::AccessibleGossipRecord;
@@ -8,11 +7,12 @@ use node_lib::sub_lib::cryptde::CryptData;
 use node_lib::sub_lib::cryptde::PlainData;
 use node_lib::sub_lib::cryptde::PublicKey;
 use node_lib::sub_lib::cryptde_null::CryptDENull;
-use node_lib::test_utils::vec_to_set;
+use node_lib::test_utils::{vec_to_set, DEFAULT_CHAIN_ID};
 use std::collections::{BTreeSet, HashSet};
 use std::convert::{TryFrom, TryInto};
 use std::net::IpAddr;
 
+#[derive(PartialEq, Clone, Debug)]
 pub enum GossipType {
     DebutGossip(SingleNode),
     PassGossip(SingleNode),
@@ -63,6 +63,7 @@ pub trait MultinodeGossip {
     fn render(&self) -> Gossip;
 }
 
+#[derive(PartialEq, Clone, Debug)]
 pub struct SingleNode {
     node: AccessibleGossipRecord,
 }
@@ -142,6 +143,7 @@ impl SingleNode {
     }
 }
 
+#[derive(PartialEq, Clone, Debug)]
 pub struct Introduction {
     introducer: AccessibleGossipRecord,
     introducee: AccessibleGossipRecord,
@@ -238,6 +240,7 @@ impl Introduction {
     }
 }
 
+#[derive(PartialEq, Clone, Debug)]
 pub struct Standard {
     nodes: Vec<AccessibleGossipRecord>,
 }
