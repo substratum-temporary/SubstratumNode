@@ -151,7 +151,7 @@ describe('After application launch: ', function () {
     await indexPage.serving.click()
     await configComponent.ipInput.setValue('1.2.3.4')
     await configComponent.neighborInput.setValue('wsijSuWax0tMAiwYPr5dgV4iuKDVIm5/l+E9BYJjbSI:1.1.1.1:12345;4321')
-    await configComponent.blockchainServiceUrl.setValue('http://127.0.0.1:8545')
+    await configComponent.blockchainServiceUrl.setValue('http://127.0.0.1')
 
     await client.waitUntil(async () => {
       return configComponent.saveConfig.isEnabled()
