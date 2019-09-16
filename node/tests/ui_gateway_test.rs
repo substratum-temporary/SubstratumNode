@@ -17,7 +17,7 @@ use websocket::OwnedMessage;
 fn ui_gateway_message_integration() {
     fdlimit::raise_fd_limit();
     let mut node = utils::SubstratumNode::start_standard(None);
-    node.wait_for_log("UIGateway bound", Some(2000));
+    node.wait_for_log("UIGateway bound", Some(5000));
     let converter = UiTrafficConverterReal::new();
     let msg = converter
         .marshal(UiMessage::GetNodeDescriptor)
@@ -64,7 +64,7 @@ fn ui_gateway_message_integration() {
 fn ui_gateway_dot_graph_message_integration() {
     fdlimit::raise_fd_limit();
     let mut node = utils::SubstratumNode::start_standard(None);
-    node.wait_for_log("UIGateway bound", Some(2000));
+    node.wait_for_log("UIGateway bound", Some(5000));
 
     let converter = UiTrafficConverterReal::new();
     let msg = converter
