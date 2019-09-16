@@ -1,11 +1,8 @@
 #!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
+CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-if [[ "$1" == "" ]]; then
-  CACHE_TARGET="$HOME"
-else
-  CACHE_TARGET="$1"
-fi
+TOOLCHAIN_HOME="$("$CI_DIR"/bashify_workspace.sh "$1")"
 
 if [[ "$2" == "" ]]; then
   NODE_VERSION="10.16.3"
@@ -18,8 +15,8 @@ function install_linux() {
   rm -r "$HOME/.yarn" || echo "yarn configuration not installed"
   sudo npm install -g yarn
 
-  mkdir -p "$CACHE_TARGET/usr/bin"
-  cp "/usr/bin/yarn" "$CACHE_TARGET/usr/bin/yarn"
+  mkdir -p "$TOOLCHAIN_HOME/usr/bin"
+  cp "/usr/bin/yarn" "$TOOLCHAIN_HOME/usr/bin/yarn"
 }
 
 function install_macOS() {
@@ -27,22 +24,21 @@ function install_macOS() {
   rm -r "$HOME/.yarn" || echo "yarn configuration not installed"
   npm install -g yarn
 
-  mkdir -p "$CACHE_TARGET/usr/local/bin"
-  cp "/usr/local/bin/yarn" "$CACHE_TARGET/usr/local/bin/yarn"
+  mkdir -p "$TOOLCHAIN_HOME/usr/local/bin"
+  cp "/usr/local/bin/yarn" "$TOOLCHAIN_HOME/usr/local/bin/yarn"
 }
 
 function install_windows() {
-  CACHE_TARGET=$(echo $CACHE_TARGET | sed 's|\\|/|g' | sed 's|^\([A-Za-z]\):|/\1|g')
   rm -r "$HOME/.nvm" || echo "node.js not installed"
   msiexec.exe //a "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" //quiet
   nvm install "$NODE_VERSION"
 
-  cp -R "$HOME/.nvm" "$CACHE_TARGET/.nvm"
+  cp -R "$HOME/.nvm" "$TOOLCHAIN_HOME/.nvm"
 
   rm -r "$HOME/.yarn" || echo "yarn not installed"
   npm install -g yarn
 
-  cp -R "$HOME/.yarn" "$CACHE_TARGET/.yarn"
+  cp -R "$HOME/.yarn" "$TOOLCHAIN_HOME/.yarn"
 }
 
 case "$OSTYPE" in

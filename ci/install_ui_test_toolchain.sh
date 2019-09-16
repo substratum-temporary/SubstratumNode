@@ -9,6 +9,7 @@ function install_linux() {
 }
 
 function install_macOS() {
+  brew update
   brew install cask || echo "Cask already installed"
   brew cask install google-chrome || echo "Chrome already installed"
 }
