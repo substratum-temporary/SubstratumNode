@@ -25,7 +25,7 @@ cat README.md.clean | sed -n '/\(Results Marker\)/,$p' | tail -n+2 >> README.md
 mkdir -p "results/$RESULTS_LABEL"
 cp ../generated.tar.gz "results/$RESULTS_LABEL/$GENERATED_NAME.tar.gz"
 git add README.md "results/$RESULTS_LABEL/$GENERATED_NAME.tar.gz"
-git commit -m "Latest results for $RESULTS_LABEL ($GENERATED_TYPE)"
+git commit -m "Latest results for $RESULTS_LABEL ($GENERATED_TYPE) - $STATUS"
 git push
 
 popd
