@@ -46,9 +46,7 @@ steps:
 
   - bash: |
       set -xev
-      if [[ "$USER" == "" ]]; then
-        USER="$USERNAME"
-      fi
+      test -v "$USER" || USER="$USERNAME"
       git config --global user.email "$USER@$HOSTNAME"
       git config --global user.name "$USER"
     displayName: "Configure git"
