@@ -1,6 +1,6 @@
 // Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 
-/* global jasmine describe beforeEach afterEach it */
+/* global jasmine describe beforeEach afterEach it fit */
 
 const assert = require('assert')
 const path = require('path')
@@ -201,7 +201,7 @@ describe('After application launch: ', function () {
     await indexPage.off.click()
     assert.strictEqual(await uiInterface.verifyNodeDown(10000), true)
 
-    await client.waitUntil(async() => (await client.getText('#node-status-label') === 'Off'), 5000,
+    await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Off'), 5000,
       'Timed out waiting for Node Status to switch to \'Off\' after switching to \'Serving\'')
 
     await indexPage.serving.click()
@@ -247,7 +247,7 @@ describe('After application launch: ', function () {
     client.element('#save-config').click()
     await client.waitUntilWindowLoaded()
 
-    await client.waitUntil(async() => (await client.getText('#node-status-label') === 'Off'), 5000,
+    await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Off'), 5000,
       'Timed out waiting for Node Status to switch to \'Off\' after switching to \'Serving\'')
     assert.strictEqual(await uiInterface.verifyNodeDown(10000), true)
     printConsoleForDebugging(client, false)
