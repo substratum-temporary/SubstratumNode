@@ -57,6 +57,7 @@ describe('After application launch: ', function () {
   })
 
   afterEach(async () => {
+    printConsoleForDebugging(this.app.client, true)
     if (this.app && this.app.isRunning()) {
       const result = this.app.stop()
       assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
@@ -130,8 +131,8 @@ describe('After application launch: ', function () {
     assert.strictEqual(await uiInterface.verifyNodeUp(15000), true)
     await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Serving'), 10000,
       'Timed out waiting for Node Status to switch to \'Serving\'')
+    printConsoleForDebugging(client, false)
     assert.strictEqual((await client.getText('#node-status-label')), 'Serving')
-    printConsoleForDebugging(client, true)
     await client.waitUntil(async () => (await client.getText('#node-descriptor') !== ''), 5000, 'Timed out waiting for Node Descriptor')
 
     await indexPage.off.click()
