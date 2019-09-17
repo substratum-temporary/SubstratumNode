@@ -112,7 +112,7 @@ describe('After application launch: ', function () {
       })
   })
 
-  it('persists user entered IP address and neighbor between serving sessions', async () => {
+  fit('persists user entered IP address and neighbor between serving sessions', async () => {
     const client = this.app.client
 
     await client.waitUntilWindowLoaded()
@@ -131,7 +131,7 @@ describe('After application launch: ', function () {
     await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Serving'), 10000,
       'Timed out waiting for Node Status to switch to \'Serving\'')
     assert.strictEqual((await client.getText('#node-status-label')), 'Serving')
-    printConsoleForDebugging(client, false)
+    printConsoleForDebugging(client, true)
     await client.waitUntil(async () => (await client.getText('#node-descriptor') !== ''), 5000, 'Timed out waiting for Node Descriptor')
 
     await indexPage.off.click()
