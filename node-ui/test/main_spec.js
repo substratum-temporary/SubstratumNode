@@ -127,7 +127,7 @@ describe('After application launch: ', function () {
     client.element('#save-config').click()
     await client.waitUntilWindowLoaded()
 
-    assert.strictEqual(await uiInterface.verifyNodeUp(10000), true)
+    assert.strictEqual(await uiInterface.verifyNodeUp(15000), true)
     await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Serving'), 10000,
       'Timed out waiting for Node Status to switch to \'Serving\'')
     assert.strictEqual((await client.getText('#node-status-label')), 'Serving')
@@ -160,7 +160,7 @@ describe('After application launch: ', function () {
     client.element('#save-config').click()
     await client.waitUntilWindowLoaded()
 
-    assert.strictEqual(await uiInterface.verifyNodeUp(10000), true)
+    assert.strictEqual(await uiInterface.verifyNodeUp(15000), true)
 
     await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Serving'), 5000,
       'Timed out waiting for Node Status to switch to \'Serving\'')
@@ -191,10 +191,10 @@ describe('After application launch: ', function () {
     await client.waitUntil(() => configComponent.saveConfig.isEnabled())
     client.element('#save-config').click()
 
+    assert.strictEqual(await uiInterface.verifyNodeUp(15000), true)
+
     await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Serving'), 5000,
       'Timed out waiting for Node Status to switch to \'Serving\'')
-    assert.strictEqual(await uiInterface.verifyNodeUp(10000), true)
-
     printConsoleForDebugging(client, false)
     await client.waitUntil(async () => (await client.getText('#node-descriptor') !== ''), 5000, 'Timed out waiting for Node Descriptor')
 
@@ -233,9 +233,10 @@ describe('After application launch: ', function () {
     client.element('#save-config').click()
     await client.waitUntilWindowLoaded()
 
+    assert.strictEqual(await uiInterface.verifyNodeUp(15000), true)
+
     await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Serving'), 5000,
       'Timed out waiting for Node Status to switch to \'Serving\'')
-    assert.strictEqual(await uiInterface.verifyNodeUp(10000), true)
     printConsoleForDebugging(client, false)
     await client.waitUntil(async () => (await indexPage.nodeDescriptor.getText()) !== '')
 
