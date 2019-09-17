@@ -47,9 +47,8 @@ steps:
 
   - bash: |
       set -xev
-      test "$USER" = "" && USER="$USERNAME"
-      git config --global user.email "$USER@$HOSTNAME"
-      git config --global user.name "$USER"
+      git config --global user.name "substratum"
+      git config --global user.email "substratum@substratum.net"
     displayName: "Configure git"
 
   - script: |
