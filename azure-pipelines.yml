@@ -4,33 +4,34 @@
 pr:
   - master
 
-strategy:
-  matrix:
-    linux:
-      imageName: "ubuntu-latest"
-    mac:
-      imageName: "macOS-latest"
-    windows:
-      imageName: "windows-latest"
-
 variables:
   rust_version: "1.37.0"
   node_version: "10.16.3"
   AZP_CACHING_TAR: true # requires minimum agent version of 2.157.0 (rolling out Palindrome Week)
 
-pool:
-  vmImage: $(imageName)
-
 stages:
   - stage: Deployment
     displayName: "Deployment"
     condition: eq(variables.DEPLOY_TO_PRODUCTION, 'true')
+
     jobs:
       - job: DeployToProduction
         steps:
           - bash: echo "Hello World!"
   - stage: Testing
     displayName: "Testing"
+    strategy:
+      matrix:
+        linux:
+          imageName: "ubuntu-latest"
+        mac:
+          imageName: "macOS-latest"
+        windows:
+          imageName: "windows-latest"
+
+    pool:
+      vmImage: $(imageName)
+
     jobs:
       - job: Tests
         steps:
