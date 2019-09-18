@@ -20,20 +20,20 @@ stages:
           - bash: echo "Hello World!"
   - stage: Testing
     displayName: "Testing"
-    strategy:
-      matrix:
-        linux:
-          imageName: "ubuntu-latest"
-        mac:
-          imageName: "macOS-latest"
-        windows:
-          imageName: "windows-latest"
-
-    pool:
-      vmImage: $(imageName)
-
     jobs:
       - job: Tests
+        strategy:
+          matrix:
+            linux:
+              imageName: "ubuntu-latest"
+            mac:
+              imageName: "macOS-latest"
+            windows:
+              imageName: "windows-latest"
+
+        pool:
+          vmImage: $(imageName)
+
         steps:
           - task: CacheBeta@0
             inputs:
