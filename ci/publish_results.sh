@@ -3,7 +3,20 @@
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 STATUS=$1
 
-GENERATED_TYPE=${AGENT_JOBNAME//Job /}
+case "$OSTYPE" in
+  msys)
+    GENERATED_TYPE="windows"
+    ;;
+  Darwin | darwin*)
+    GENERATED_TYPE="mac"
+    ;;
+  linux*)
+    GENERATED_TYPE="linux"
+    ;;
+  *)
+    GENERATED_TYPE="unknown"
+    ;;
+esac
 GENERATED_NAME="generated-$GENERATED_TYPE"
 
 pushd "$CI_DIR/../results"
