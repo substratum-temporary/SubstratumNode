@@ -84,10 +84,10 @@ stages:
 
   - stage: Release
     displayName: "Release"
-    condition: eq(variables.DEPLOY_TO_PRODUCTION, 'true')
+    condition: eq(variables.CUT_RELEASE_BINARIES, 'true')
 
     jobs:
-      - job: ReleaseBinaries
+      - job: ReleaseBinary
         strategy:
           matrix:
             linux:
