@@ -10,17 +10,6 @@ const WebSocket = require('isomorphic-ws')
 const uiInterface = require('../main-process/ui_interface')
 const consoleWrapper = require('../main-process/wrappers/console_wrapper')
 const testUtilities = require('./test_utilities')
-const webdriverio = require('webdriverio')
-const webdriverOptions = {
-  host: 'localhost', // Use localhost as chrome driver server
-  port: 9515, // "9515" is the port opened by chrome driver.
-  desiredCapabilities: {
-    browserName: 'chrome',
-    chromeOptions: {
-      args: ['headless', 'disable-gpu']
-    }
-  }
-}
 
 global.WebSocket = WebSocket
 
@@ -33,6 +22,10 @@ describe('After application launch: ', function () {
     assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
 
     testUtilities.purgeExistingState()
+    let chromeDriverArguments = ['--headless'];
+    if (process.platform === 'win32') {
+      chromeDriverArguments.push('--disable-gpu')
+    }
     this.app = new Application({
       // Your electron path can be any binary
       // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
@@ -58,8 +51,8 @@ describe('After application launch: ', function () {
       // The following line tells spectron to look and use the main.js file
       // and the package.json located 1 level above.
       args: [path.join(__dirname, '..')]
+      chromeDriverArgs: chromeDriverArguments
     })
-    this.app.client = webdriverio.remote(webdriverOptions)
 
     return this.app.start()
       .then(() => {
