@@ -21,59 +21,71 @@ variables:
 pool:
   vmImage: $(imageName)
 
-steps:
-  - task: CacheBeta@0
-    inputs:
-      key: |
-        "$(rust_version)" | $(Agent.OS) | "v3.7"
-      path: $(Pipeline.Workspace)/toolchains
-      cacheHitVar: NODE_TOOLCHAINS_RESTORED
+stages:
+  - stage: Deployment
+    displayName: "Deployment"
+    condition: eq(variables.DEPLOY_TO_PRODUCTION, 'true')
+    jobs:
+      - job: DeployToProduction
+        steps:
+          - bash: echo "Hello World!"
+  - stage: Testing
+    displayName: "Testing"
+    jobs:
+      - job: Tests
+        steps:
+          - task: CacheBeta@0
+            inputs:
+              key: |
+                "$(rust_version)" | $(Agent.OS) | "v3.7"
+              path: $(Pipeline.Workspace)/toolchains
+              cacheHitVar: NODE_TOOLCHAINS_RESTORED
 
-  - task: NodeTool@0
-    inputs:
-      versionSpec: $(node_version)
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(node_version)
 
-  - task: Npm@1
-    inputs:
-      command: 'custom'
-      customCommand: 'install -g yarn'
+          - task: Npm@1
+            inputs:
+              command: 'custom'
+              customCommand: 'install -g yarn'
 
-  - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)' '$(rust_version)'
-    condition: ne(variables.NODE_TOOLCHAINS_RESTORED, 'true')
-    displayName: "Install Node toolchain"
+          - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)' '$(rust_version)'
+            condition: ne(variables.NODE_TOOLCHAINS_RESTORED, 'true')
+            displayName: "Install Node toolchain"
 
-  - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
-    displayName: "Install NodeUI test toolchain"
+          - bash: ci/install_ui_test_toolchain.sh '$(Pipeline.Workspace)'
+            displayName: "Install NodeUI test toolchain"
 
-  - bash: |
-      set -xev
-      git config --global user.name "substratum"
-      git config --global user.email "substratum@substratum.net"
-    displayName: "Configure git"
+          - bash: |
+              set -xev
+              git config --global user.name "substratum"
+              git config --global user.email "substratum@substratum.net"
+            displayName: "Configure git"
 
-  - script: |
-      netsh advfirewall set allprofiles state off
-      net stop sharedaccess || echo ICS already disabled
-      net stop W3SVC || echo W3SVC service already disabled
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: "Disable Annoying Windows Services"
+          - script: |
+              netsh advfirewall set allprofiles state off
+              net stop sharedaccess || echo ICS already disabled
+              net stop W3SVC || echo W3SVC service already disabled
+            condition: eq( variables['Agent.OS'], 'Windows_NT' )
+            displayName: "Disable Annoying Windows Services"
 
-  - bash: ci/prepare_node_build.sh '$(Pipeline.Workspace)'
-    displayName: "Prepare Node build"
-  - bash: ci/sccache.sh '$(Pipeline.Workspace)' && node/ci/all.sh '$(Pipeline.Workspace)' && dns_utility/ci/all.sh '$(Pipeline.Workspace)'
-    displayName: "Build Node and run tests"
+          - bash: ci/prepare_node_build.sh '$(Pipeline.Workspace)'
+            displayName: "Prepare Node build"
+          - bash: ci/sccache.sh '$(Pipeline.Workspace)' && node/ci/all.sh '$(Pipeline.Workspace)' && dns_utility/ci/all.sh '$(Pipeline.Workspace)'
+            displayName: "Build Node and run tests"
 
-  - bash: ci/multinode_integration_test.sh '$(Pipeline.Workspace)'
-    displayName: "Run multinode integration tests"
+          - bash: ci/multinode_integration_test.sh '$(Pipeline.Workspace)'
+            displayName: "Run multinode integration tests"
 
-  - bash: ci/prepare_node_ui_build.sh
-    displayName: "Prepare NodeUI build"
-  - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
-    displayName: "Build NodeUI and run tests"
+          - bash: ci/prepare_node_ui_build.sh
+            displayName: "Prepare NodeUI build"
+          - bash: node-ui/ci/build.sh && node-ui/ci/unit_tests.sh && node-ui/ci/ng_tests.sh && node-ui/ci/integration_tests.sh
+            displayName: "Build NodeUI and run tests"
 
-  - bash: ci/collect_results.sh && ci/publish_results.sh '$(Agent.JobStatus)'
-    env:
-      GITHUB_TOKEN: $(GITHUB_TOKEN)
-    displayName: "Collect and publish results"
-    condition: succeededOrFailed()
+          - bash: ci/collect_results.sh && ci/publish_results.sh '$(Agent.JobStatus)'
+            env:
+              GITHUB_TOKEN: $(GITHUB_TOKEN)
+            displayName: "Collect and publish results"
+            condition: succeededOrFailed()
 

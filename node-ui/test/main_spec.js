@@ -65,7 +65,7 @@ describe('After application launch: ', function () {
   })
 
   afterEach(async () => {
-    this.app.client.log('driver').then((msg) => { console.log(msg) })
+    //this.app.client.log('driver').then((msg) => { console.log(msg) })
     printConsoleForDebugging(this.app.client, true)
     if (this.app && this.app.isRunning()) {
       const result = this.app.stop()
