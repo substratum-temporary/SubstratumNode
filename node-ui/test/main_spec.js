@@ -22,15 +22,12 @@ describe('After application launch: ', function () {
     assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
 
     testUtilities.purgeExistingState()
-    const appArguments = [
-      // The following line tells spectron to look and use the main.js file
-      // and the package.json located 1 level above.
-      path.join(__dirname, '..'),
+    const chromeDriverArguments = [
       '--headless',
       '--no-sandbox'
     ]
     if (process.platform === 'win32') {
-      appArguments.push('--disable-gpu')
+      chromeDriverArguments.push('--disable-gpu')
     }
     this.app = new Application({
       // Your electron path can be any binary
@@ -54,7 +51,10 @@ describe('After application launch: ', function () {
       //   |__ test
       //    |__ spec.js  <- You are here! ~ Well you should be.
 
-      args: appArguments
+      // The following line tells spectron to look and use the main.js file
+      // and the package.json located 1 level above.
+      args: [path.join(__dirname, '..')],
+      chromeDriverArgs: chromeDriverArguments
     })
 
     return this.app.start()
@@ -65,6 +65,7 @@ describe('After application launch: ', function () {
   })
 
   afterEach(async () => {
+    this.app.client.log('driver').then((msg) => { console.log(msg) })
     printConsoleForDebugging(this.app.client, true)
     if (this.app && this.app.isRunning()) {
       const result = this.app.stop()
