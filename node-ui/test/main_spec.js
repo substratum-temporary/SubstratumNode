@@ -22,7 +22,7 @@ describe('After application launch: ', function () {
     assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
 
     testUtilities.purgeExistingState()
-    let chromeDriverArguments = ['--headless'];
+    const chromeDriverArguments = ['--headless']
     if (process.platform === 'win32') {
       chromeDriverArguments.push('--disable-gpu')
     }
@@ -50,7 +50,7 @@ describe('After application launch: ', function () {
 
       // The following line tells spectron to look and use the main.js file
       // and the package.json located 1 level above.
-      args: [path.join(__dirname, '..')]
+      args: [path.join(__dirname, '..')],
       chromeDriverArgs: chromeDriverArguments
     })
 
