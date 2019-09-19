@@ -36,6 +36,7 @@ case "$OSTYPE" in
       "${GPG_EXECUTABLE}" --verify target/release/$DNS_EXECUTABLE.sig target/release/$DNS_EXECUTABLE
       ;;
    darwin*)
+      security unlock-keychain -p "$PASSPHRASE"
       cd "$CI_DIR/../node"
       cp Info.plist target/release
       codesign -s 'Developer ID Application: Substratum Services, Inc. (TKDGR66924)'  -fv "target/release/$NODE_EXECUTABLE"
@@ -78,7 +79,7 @@ case "$OSTYPE" in
         zip -j SubstratumNode-macOS.dmg.zip node-ui/electron-builder-out/SubstratumNode*.dmg
         ;;
    msys)
-        export PATH="$PATH:/7-Zip"
+        export PATH="$PATH:$TOOLCHAIN_HOME/7-Zip"
         signtool sign //tr http://timestamp.digicert.com //td sha256 //fd sha256 //i "DigiCert SHA2 Assured ID Code Signing CA" //n "Substratum Services, Inc." //sm "node-ui/electron-builder-out/SubstratumNode*.exe"
         signtool verify //pa "node-ui/electron-builder-out/SubstratumNode*.exe"
 

@@ -100,13 +100,30 @@ stages:
 
         pool:
           vmImage: $(imageName)
+
         steps:
+          - task: DownloadSecureFile@1
+            name: linuxCodeSigningKeyFile
+            displayName: "Download code signing key for Linux"
+            inputs:
+              secureFile: 'codesign_key.asc'
+
+          - task: DownloadSecureFile@1
+            name: windowsCodeSigningKeyFile
+            displayName: "Download code signing key for Windows"
+            inputs:
+              secureFile: 'SubstratumServicesCodeSigningCert.pfx'
+
           - task: CacheBeta@0
             inputs:
               key: |
                 "$(rust_version)" | $(Agent.OS) | "v3.7"
               path: $(Pipeline.Workspace)/toolchains
               cacheHitVar: NODE_TOOLCHAINS_RESTORED
+
+          - bash: gpg --import $(linuxCodeSigningKeyFile.secureFilePath) --passphrase $(PASSPHRASE)
+            condition: eq( variables['Agent.OS'], 'Linux' )
+            displayName: "Install code signing key for Linux"
 
           - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)' '$(rust_version)'
             condition: ne(variables.NODE_TOOLCHAINS_RESTORED, 'true')
