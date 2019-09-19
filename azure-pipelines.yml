@@ -12,6 +12,7 @@ variables:
 stages:
   - stage: Testing
     displayName: "Testing"
+    condition: ne(variables.CUT_RELEASE_BINARIES, 'true')
     jobs:
       - job: Tests
         strategy:
