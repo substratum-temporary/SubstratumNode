@@ -121,7 +121,7 @@ stages:
               path: $(Pipeline.Workspace)/toolchains
               cacheHitVar: NODE_TOOLCHAINS_RESTORED
 
-          - bash: gpg --import $(linuxCodeSigningKeyFile.secureFilePath) --passphrase $(PASSPHRASE)
+          - bash: gpg --import '$(linuxCodeSigningKeyFile.secureFilePath)'
             condition: eq( variables['Agent.OS'], 'Linux' )
             displayName: "Install code signing key for Linux"
 
@@ -136,3 +136,5 @@ stages:
             env:
               RELEASE_PASSPHRASE: $(RELEASE_PASSPHRASE)
             displayName: "Build and create release artifacts"
+
+            # TODO: Distribute release artifacts!!!
