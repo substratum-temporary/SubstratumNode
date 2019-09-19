@@ -24,7 +24,7 @@ function install_macOS() {
 
 function install_windows() {
   choco install -y 7zip
-  choco install -y windows-sdk-10.1
+  choco install -y windows-sdk-10-version-1809-all
 
   echo "which signtool: $(which signtool)"
   cat "/c/ProgramData/chocolatey/logs/chocolatey.log"
