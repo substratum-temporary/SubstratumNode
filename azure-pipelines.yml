@@ -104,12 +104,14 @@ stages:
         steps:
           - task: DownloadSecureFile@1
             name: linuxCodeSigningKeyFile
+            condition: eq( variables['Agent.OS'], 'Linux' )
             displayName: "Download code signing key for Linux"
             inputs:
               secureFile: 'codesign_key.asc'
 
           - task: DownloadSecureFile@1
             name: windowsCodeSigningKeyFile
+            condition: eq( variables['Agent.OS'], 'Windows_NT' )
             displayName: "Download code signing key for Windows"
             inputs:
               secureFile: 'SubstratumServicesCodeSigningCert.pfx'
@@ -132,9 +134,9 @@ stages:
           - bash: ci/install_release_toolchain.sh '$(Pipeline.Workspace)'
             displayName: "Install release toolchain"
 
-          - bash: ci/release.sh '$(RELEASE_PASSPHRASE)' '$(Pipeline.Workspace)'
+          - bash: ci/release.sh '$(Pipeline.Workspace)'
             env:
-              RELEASE_PASSPHRASE: $(RELEASE_PASSPHRASE)
+              PASSPHRASE: $(PASSPHRASE)
             displayName: "Build and create release artifacts"
 
             # TODO: Distribute release artifacts!!!

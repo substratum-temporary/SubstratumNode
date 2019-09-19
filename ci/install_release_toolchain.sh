@@ -23,13 +23,16 @@ function install_macOS() {
 }
 
 function install_windows() {
-  ls -l "/Program Files (x86)/Windows Kits/10/bin/x86/" || echo "signtool not found here"
-  ls -l "/Program Files (x86)/Windows Kits/10/bin/x64/" || echo "signtool not found here"
   CACHE_TARGET="$("$CI_DIR"/bashify_workspace.sh "$CACHE_TARGET")"
   ZIP_DOWNLOAD_URL="https://www.7-zip.org/a/7z1900-x64.exe"
   curl "$ZIP_DOWNLOAD_URL" > "$TEMP/7z-x64.exe"
   cmd //C "echo.>%TEMP%\7z-x64.exe:Zone.Identifier"
   "$TEMP/7z-x64.exe" //S //D="$CACHE_TARGET/7-Zip"
+
+  choco install -y windows-sdk-10.0
+
+  ls -l "/Program Files (x86)/Windows Kits/10/bin/x86/" || echo "signtool not found here"
+  ls -l "/Program Files (x86)/Windows Kits/10/bin/x64/" || echo "signtool not found here"
 }
 
 case "$OSTYPE" in

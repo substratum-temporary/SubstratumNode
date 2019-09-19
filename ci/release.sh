@@ -1,11 +1,15 @@
 #!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
-PASSPHRASE="$1"
-TOOLCHAIN_HOME="$2"
+TOOLCHAIN_HOME="$1"
 NODE_EXECUTABLE="SubstratumNode"
 DNS_EXECUTABLE="dns_utility"
 GPG_EXECUTABLE="gpg"
+
+if [[ "$PASSPHRASE" == "" ]]; then
+  echo "PASSPHRASE cannot be blank"
+  exit 1
+fi
 
 if [[ "$OSTYPE" == "msys" ]]; then
   NODE_EXECUTABLEW="${NODE_EXECUTABLE}W.exe"
