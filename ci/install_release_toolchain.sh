@@ -31,8 +31,8 @@ function install_windows() {
 
   choco install -y windows-sdk-10.0
 
-  ls -l "/Program Files (x86)/Windows Kits/10/bin/x86/" || echo "signtool not found here"
-  ls -l "/Program Files (x86)/Windows Kits/10/bin/x64/" || echo "signtool not found here"
+  echo "which signtool: $(which signtool)"
+  cat "/ProgramData/chocolatey/logs/chocolatey.log"
 }
 
 case "$OSTYPE" in

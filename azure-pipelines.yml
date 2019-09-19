@@ -134,6 +134,10 @@ stages:
           - bash: ci/install_release_toolchain.sh '$(Pipeline.Workspace)'
             displayName: "Install release toolchain"
 
+          - bash: certutil -f -user -p '$(PASSPHRASE)' -enterprise -importpfx TrustedPeople '$(windowsCodeSigningKeyFile.secureFilePath)'
+            condition: eq( variables['Agent.OS'], 'Windows_NT' )
+            displayName: "Install code signing key for Windows"
+
           - bash: ci/release.sh '$(Pipeline.Workspace)'
             env:
               PASSPHRASE: $(PASSPHRASE)
