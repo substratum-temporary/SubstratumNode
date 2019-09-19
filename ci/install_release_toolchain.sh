@@ -23,7 +23,7 @@ function install_macOS() {
 }
 
 function install_windows() {
-  choco install 7zip.install
+  choco install -y 7zip
   choco install -y windows-sdk-10.1
 
   echo "which signtool: $(which signtool)"
