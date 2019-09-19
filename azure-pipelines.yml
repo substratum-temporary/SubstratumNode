@@ -101,4 +101,17 @@ stages:
         pool:
           vmImage: $(imageName)
         steps:
-          - bash: ci/install_release_toolchain.sh
+          - task: CacheBeta@0
+            inputs:
+              key: |
+                "$(rust_version)" | $(Agent.OS) | "v3.7"
+              path: $(Pipeline.Workspace)/toolchains
+              cacheHitVar: NODE_TOOLCHAINS_RESTORED
+
+          - bash: ci/install_release_toolchain.sh '$(Pipeline.Workspace)'
+            displayName: "Install release toolchain"
+
+          - bash: ci/release.sh '$(RELEASE_PASSPHRASE) '$(Pipeline.Workspace)'
+            env:
+              RELEASE_PASSPHRASE: $(RELEASE_PASSPHRASE)
+            displayName: "Build and create release artifacts"

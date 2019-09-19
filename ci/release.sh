@@ -14,6 +14,8 @@ if [[ "$OSTYPE" == "msys" ]]; then
   GPG_EXECUTABLE="/c/Program Files (x86)/gnupg/bin/gpg"
 fi
 
+source "$CI_DIR"/environment.sh "$TOOLCHAIN_HOME"
+
 cd "$CI_DIR/../node"
 cargo clean
 "ci/build.sh"
@@ -75,11 +77,23 @@ case "$OSTYPE" in
         zip -j SubstratumNode-macOS.dmg.zip node-ui/electron-builder-out/SubstratumNode*.dmg
         ;;
    msys)
+        export PATH="$PATH:/7-Zip"
         signtool sign //tr http://timestamp.digicert.com //td sha256 //fd sha256 //i "DigiCert SHA2 Assured ID Code Signing CA" //n "Substratum Services, Inc." //sm "node-ui/electron-builder-out/SubstratumNode*.exe"
         signtool verify //pa "node-ui/electron-builder-out/SubstratumNode*.exe"
 
-        zip -j SubstratumNode-Windows-binary.zip dns_utility/target/release/$DNS_EXECUTABLE dns_utility/target/release/$DNS_EXECUTABLEW node/target/release/$NODE_EXECUTABLE node/target/release/$NODE_EXECUTABLEW node/target/release/$NODE_EXECUTABLE.sig node/target/release/$NODE_EXECUTABLEW.sig
-        zip -j SubstratumNode-Windows.exe.zip node-ui/electron-builder-out/SubstratumNode*.exe
+        ARCHIVE_PATH="$PWD"
+        pushd dns_utility/target/release
+        7z a "$ARCHIVE_PATH"/SubstratumNode-Windows-binary.zip $DNS_EXECUTABLE
+        7z a "$ARCHIVE_PATH"/SubstratumNode-Windows-binary.zip $DNS_EXECUTABLEW
+        popd
+        pushd node/target/release
+        7z a "$ARCHIVE_PATH"/SubstratumNode-Windows-binary.zip $NODE_EXECUTABLEW
+        7z a "$ARCHIVE_PATH"/SubstratumNode-Windows-binary.zip $NODE_EXECUTABLE.sig
+        7z a "$ARCHIVE_PATH"/SubstratumNode-Windows-binary.zip $NODE_EXECUTABLEW.sig
+        popd
+        pushd node-ui/electron-builder-out
+        7z a "$ARCHIVE_PATH"/SubstratumNode-Windows.exe.zip SubstratumNode*.exe
+        popd
         ;;
    *)
         echo "unsupported operating system detected."; exit 1
