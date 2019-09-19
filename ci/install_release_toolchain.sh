@@ -1,24 +1,25 @@
 #!/bin/bash -xev
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
-# TODO: install zip command for all platforms
 
 function install_linux() {
   if ! command -v zip; then
-    echo "zip failed to install"
+    echo "zip command not found"
     exit 1
   fi
 }
 
 function install_macOS() {
   if ! command -v zip; then
-    echo "zip failed to install"
+    echo "zip command not found"
     exit 1
   fi
 }
 
 function install_windows() {
-  echo "unimplemented"
-  exit 1
+  ZIP_DOWNLOAD_URL="https://www.7-zip.org/a/7z1900-x64.exe"
+  curl "$ZIP_DOWNLOAD_URL" > "$TEMP/7z-x64.exe"
+  cmd //C "echo.>%TEMP%\7z-x64.exe:Zone.Identifier"
+  "$TEMP/7z-x64.exe" //S //D="/7-Zip"
 }
 
 case "$OSTYPE" in
