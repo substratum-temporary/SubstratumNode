@@ -108,6 +108,10 @@ stages:
               path: $(Pipeline.Workspace)/toolchains
               cacheHitVar: NODE_TOOLCHAINS_RESTORED
 
+          - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)' '$(rust_version)'
+            condition: ne(variables.NODE_TOOLCHAINS_RESTORED, 'true')
+            displayName: "Install Node toolchain"
+
           - bash: ci/install_release_toolchain.sh '$(Pipeline.Workspace)'
             displayName: "Install release toolchain"
 
