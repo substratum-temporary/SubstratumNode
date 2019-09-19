@@ -111,7 +111,7 @@ stages:
           - bash: ci/install_release_toolchain.sh '$(Pipeline.Workspace)'
             displayName: "Install release toolchain"
 
-          - bash: ci/release.sh '$(RELEASE_PASSPHRASE) '$(Pipeline.Workspace)'
+          - bash: ci/release.sh '$(RELEASE_PASSPHRASE)' '$(Pipeline.Workspace)'
             env:
               RELEASE_PASSPHRASE: $(RELEASE_PASSPHRASE)
             displayName: "Build and create release artifacts"
