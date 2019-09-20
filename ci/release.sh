@@ -83,6 +83,7 @@ case "$OSTYPE" in
         zip -j SubstratumNode-macOS.dmg.zip node-ui/electron-builder-out/SubstratumNode*.dmg
         ;;
    msys)
+        AzureSignTool sign --help
         signtool sign //tr http://timestamp.digicert.com //td sha256 //fd sha256 //i "DigiCert SHA2 Assured ID Code Signing CA" //n "Substratum Services, Inc." //sm "node-ui/electron-builder-out/SubstratumNode*.exe"
         signtool verify //pa "node-ui/electron-builder-out/SubstratumNode*.exe"
 
