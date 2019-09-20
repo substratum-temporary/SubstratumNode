@@ -29,6 +29,17 @@ cd "$CI_DIR/../dns_utility"
 cargo clean
 "ci/build.sh"
 
+function azure_key_vault_sign() {
+  AzureSignTool sign "$1" \
+  --file-digest sha256 \
+  --timestamp-rfc3161 http://timestamp.digicert.com \
+  --timestamp-digest sha256 \
+  --azure-key-vault-url https://substratumnode.vault.azure.net \
+  --azure-key-vault-client-id "77cb9689-ce27-412f-bc16-4cc0a599676b" \
+  --azure-key-vault-client-secret "$PASSPHRASE" \
+  --azure-key-vault-certificate "SubstratumNodeCodeSinging"
+}
+
 # sign
 case "$OSTYPE" in
    linux*)
@@ -52,16 +63,11 @@ case "$OSTYPE" in
       ;;
    msys)
       cd "$CI_DIR/../node"
-      AzureSignTool sign --help
-      signtool sign //tr http://timestamp.digicert.com //td sha256 //fd sha256 //i "DigiCert SHA2 Assured ID Code Signing CA" //n "Substratum Services, Inc." //sm "target/release/$NODE_EXECUTABLE"
-      signtool verify //pa "target/release/$NODE_EXECUTABLE"
-      signtool sign //tr http://timestamp.digicert.com //td sha256 //fd sha256 //i "DigiCert SHA2 Assured ID Code Signing CA" //n "Substratum Services, Inc." //sm "target/release/$NODE_EXECUTABLEW"
-      signtool verify //pa "target/release/$NODE_EXECUTABLEW"
+      azure_key_vault_sign "target/release/$NODE_EXECUTABLE"
+      azure_key_vault_sign "target/release/$NODE_EXECUTABLEW"
       cd "$CI_DIR/../dns_utility"
-      signtool sign //tr http://timestamp.digicert.com //td sha256 //fd sha256 //i "DigiCert SHA2 Assured ID Code Signing CA" //n "Substratum Services, Inc." //sm "target/release/$DNS_EXECUTABLE"
-      signtool verify //pa "target/release/$DNS_EXECUTABLE"
-      signtool sign //tr http://timestamp.digicert.com //td sha256 //fd sha256 //i "DigiCert SHA2 Assured ID Code Signing CA" //n "Substratum Services, Inc." //sm "target/release/$DNS_EXECUTABLEW"
-      signtool verify //pa "target/release/$DNS_EXECUTABLEW"
+      azure_key_vault_sign "target/release/$DNS_EXECUTABLE"
+      azure_key_vault_sign "target/release/$DNS_EXECUTABLEW"
       ;;
    *)
         echo "unsupported operating system detected."; exit 1
@@ -84,8 +90,7 @@ case "$OSTYPE" in
         zip -j SubstratumNode-macOS.dmg.zip node-ui/electron-builder-out/SubstratumNode*.dmg
         ;;
    msys)
-        signtool sign //tr http://timestamp.digicert.com //td sha256 //fd sha256 //i "DigiCert SHA2 Assured ID Code Signing CA" //n "Substratum Services, Inc." //sm "node-ui/electron-builder-out/SubstratumNode*.exe"
-        signtool verify //pa "node-ui/electron-builder-out/SubstratumNode*.exe"
+        azure_key_vault_sign "node-ui/electron-builder-out/SubstratumNode*.exe"
 
         ARCHIVE_PATH="$PWD"
         pushd dns_utility/target/release
