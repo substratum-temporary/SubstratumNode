@@ -36,7 +36,7 @@ function azure_key_vault_sign() {
   --timestamp-digest sha256 \
   --azure-key-vault-url https://substratumnode.vault.azure.net \
   --azure-key-vault-client-id "77cb9689-ce27-412f-bc16-4cc0a599676b" \
-  --azure-key-vault-client-secret "$PASSPHRASE" \
+  --azure-key-vault-client-secret "$AZURE_KEY_VAULT_CLIENT_SECRET" \
   --azure-key-vault-certificate "SubstratumNodeCodeSinging"
 }
 
@@ -62,6 +62,10 @@ case "$OSTYPE" in
       codesign -v -v "target/release/$DNS_EXECUTABLE"
       ;;
    msys)
+		  if [[ "$AZURE_KEY_VAULT_CLIENT_SECRET" == "" ]]; then
+				echo "AZURE_KEY_VAULT_CLIENT_SECRET cannot be blank"
+				exit 1
+			fi
       cd "$CI_DIR/../node"
       azure_key_vault_sign "target/release/$NODE_EXECUTABLE"
       azure_key_vault_sign "target/release/$NODE_EXECUTABLEW"

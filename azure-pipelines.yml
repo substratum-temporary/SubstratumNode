@@ -145,6 +145,7 @@ stages:
           - bash: ci/release.sh '$(Pipeline.Workspace)'
             env:
               PASSPHRASE: $(PASSPHRASE)
+              AZURE_KEY_VAULT_CLIENT_SECRET: $(AZURE_KEY_VAULT_CLIENT_SECRET)
             displayName: "Build and create release artifacts"
 
             # TODO: Distribute release artifacts!!!
