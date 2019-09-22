@@ -30,14 +30,16 @@ cargo clean
 "ci/build.sh"
 
 function azure_key_vault_sign() {
-  AzureSignTool sign "$1" \
-  --file-digest sha256 \
-  --timestamp-rfc3161 http://timestamp.digicert.com \
-  --timestamp-digest sha256 \
-  --azure-key-vault-url https://substratumnode.vault.azure.net \
-  --azure-key-vault-client-id "77cb9689-ce27-412f-bc16-4cc0a599676b" \
-  --azure-key-vault-client-secret "$AZURE_KEY_VAULT_CLIENT_SECRET" \
-  --azure-key-vault-certificate "SubstratumNodeCodeSinging"
+	for file in "$@"; do
+		AzureSignTool sign "$@" \
+		--file-digest sha256 \
+		--timestamp-rfc3161 http://timestamp.digicert.com \
+		--timestamp-digest sha256 \
+		--azure-key-vault-url https://substratumnode.vault.azure.net \
+		--azure-key-vault-client-id "77cb9689-ce27-412f-bc16-4cc0a599676b" \
+		--azure-key-vault-client-secret "$AZURE_KEY_VAULT_CLIENT_SECRET" \
+		--azure-key-vault-certificate "SubstratumNodeCodeSinging"
+	done
 }
 
 # sign
@@ -94,7 +96,7 @@ case "$OSTYPE" in
         zip -j SubstratumNode-macOS.dmg.zip node-ui/electron-builder-out/SubstratumNode*.dmg
         ;;
    msys)
-        azure_key_vault_sign "node-ui/electron-builder-out/SubstratumNode*.exe"
+        azure_key_vault_sign "node-ui/electron-builder-out/"SubstratumNode*.exe
 
         ARCHIVE_PATH="$PWD"
         pushd dns_utility/target/release
