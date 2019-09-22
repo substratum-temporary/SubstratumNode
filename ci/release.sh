@@ -31,7 +31,7 @@ cargo clean
 
 function azure_key_vault_sign() {
 	for file in "$@"; do
-		AzureSignTool sign "$@" \
+		AzureSignTool sign "$file" \
 		--file-digest sha256 \
 		--timestamp-rfc3161 http://timestamp.digicert.com \
 		--timestamp-digest sha256 \
