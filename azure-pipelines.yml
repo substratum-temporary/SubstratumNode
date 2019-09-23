@@ -109,6 +109,15 @@ stages:
               path: $(Pipeline.Workspace)/toolchains
               cacheHitVar: NODE_TOOLCHAINS_RESTORED
 
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(node_version)
+
+          - task: Npm@1
+            inputs:
+              command: 'custom'
+              customCommand: 'install -g yarn'
+
           - task: DownloadSecureFile@1
             name: linuxCodeSigningKeyFile
             condition: eq( variables['Agent.OS'], 'Linux' )
