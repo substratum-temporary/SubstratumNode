@@ -149,4 +149,10 @@ stages:
               AZURE_KEY_VAULT_CLIENT_SECRET: $(AZURE_KEY_VAULT_CLIENT_SECRET)
             displayName: "Build and create release artifacts"
 
-            # TODO: Distribute release artifacts!!!
+          - task: CopyFiles@2
+            inputs:
+              contents: 'SubstratumNode-*.zip'
+              targetFolder: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: $(Build.ArtifactStagingDirectory)
