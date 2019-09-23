@@ -53,4 +53,6 @@ AzureSignTool sign [YOUR_FILE_PATH]
     -v
 ````
 
+For more information about accessing resources from Azure Key Vault, please see this
+[document](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#create-an-azure-active-directory-application).
 
