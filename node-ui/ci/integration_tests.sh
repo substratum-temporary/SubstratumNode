@@ -18,7 +18,7 @@ function run_on_macOS() {
 }
 
 function run_on_windows() {
-  ci/run_integration_tests.sh || ls -lR "/tmp" #cat "$HOME/AppData/Local/Substratum/SubstratumNode_rCURRENT.log"
+  ci/run_integration_tests.sh || find / -name=SubstratumNode_rCURRENT.log #cat "$HOME/AppData/Local/Substratum/SubstratumNode_rCURRENT.log"
 }
 
 pushd "$CI_DIR/.."
