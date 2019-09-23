@@ -88,7 +88,7 @@ stages:
     condition: eq(variables.CUT_RELEASE_BINARIES, 'true')
 
     jobs:
-      - job: ReleaseBinary
+      - job: BuildArtifact
         strategy:
           matrix:
             linux:
@@ -119,9 +119,9 @@ stages:
               customCommand: 'install -g yarn'
 
           - task: DownloadSecureFile@1
-            name: linuxCodeSigningKeyFile
+            name: linuxDigitalSignature
             condition: eq( variables['Agent.OS'], 'Linux' )
-            displayName: "Download code signing key for Linux"
+            displayName: "Download digital signature for Linux"
             inputs:
               secureFile: 'codesign_key.asc'
 
@@ -132,9 +132,9 @@ stages:
               certPwd: $(PASSPHRASE)
               keychainPassword: $(PASSPHRASE)
 
-          - bash: gpg --import '$(linuxCodeSigningKeyFile.secureFilePath)'
+          - bash: gpg --import '$(linuxDigitalSignature.secureFilePath)'
             condition: eq( variables['Agent.OS'], 'Linux' )
-            displayName: "Install code signing key for Linux"
+            displayName: "Install digital signature for Linux"
 
           - bash: ci/install_node_toolchain.sh '$(Pipeline.Workspace)' '$(rust_version)'
             condition: ne(variables.NODE_TOOLCHAINS_RESTORED, 'true')
@@ -147,12 +147,14 @@ stages:
             env:
               PASSPHRASE: $(PASSPHRASE)
               AZURE_KEY_VAULT_CLIENT_SECRET: $(AZURE_KEY_VAULT_CLIENT_SECRET)
-            displayName: "Build and create release artifacts"
+            displayName: "Build and generate artifacts"
 
           - task: CopyFiles@2
             inputs:
               contents: 'SubstratumNode-*.zip'
               targetFolder: $(Build.ArtifactStagingDirectory)
+
           - task: PublishBuildArtifacts@1
             inputs:
+              artifactName: 'SubstratumNode-$(Build.BuildID)'
               pathToPublish: $(Build.ArtifactStagingDirectory)
