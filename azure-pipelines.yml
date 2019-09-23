@@ -102,6 +102,13 @@ stages:
           vmImage: $(imageName)
 
         steps:
+          - task: CacheBeta@0
+            inputs:
+              key: |
+                "$(rust_version)" | $(Agent.OS) | "v3.7"
+              path: $(Pipeline.Workspace)/toolchains
+              cacheHitVar: NODE_TOOLCHAINS_RESTORED
+
           - task: DownloadSecureFile@1
             name: linuxCodeSigningKeyFile
             condition: eq( variables['Agent.OS'], 'Linux' )
@@ -109,19 +116,11 @@ stages:
             inputs:
               secureFile: 'codesign_key.asc'
 
-          - task: DownloadSecureFile@1
-            name: windowsCodeSigningKeyFile
-            condition: eq( variables['Agent.OS'], 'Windows_NT' )
-            displayName: "Download code signing key for Windows"
+          - task: InstallAppleCertificate@2
             inputs:
-              secureFile: 'SubstratumServicesCodeSigningCert.pfx'
-
-          - task: CacheBeta@0
-            inputs:
-              key: |
-                "$(rust_version)" | $(Agent.OS) | "v3.7"
-              path: $(Pipeline.Workspace)/toolchains
-              cacheHitVar: NODE_TOOLCHAINS_RESTORED
+              certSecureFile: 'SubstratumServicesCertificates.p12'
+              certPwd: $(PASSPHRASE)
+              keychainPassword: $(PASSPHRASE)
 
           - bash: gpg --import '$(linuxCodeSigningKeyFile.secureFilePath)'
             condition: eq( variables['Agent.OS'], 'Linux' )
@@ -133,14 +132,6 @@ stages:
 
           - bash: ci/install_release_toolchain.sh '$(Pipeline.Workspace)'
             displayName: "Install release toolchain"
-
-          - script: dotnet tool install --global AzureSignTool --version 2.0.17
-            condition: eq( variables['Agent.OS'], 'Windows_NT' )
-            displayName: "Install AzureSignTool for Windows"
-
-          - bash: certutil -f -user -p '$(PASSPHRASE)' -enterprise -importpfx TrustedPeople '$(windowsCodeSigningKeyFile.secureFilePath)'
-            condition: eq( variables['Agent.OS'], 'Windows_NT' )
-            displayName: "Install code signing key for Windows"
 
           - bash: ci/release.sh '$(Pipeline.Workspace)'
             env:
