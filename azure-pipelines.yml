@@ -117,6 +117,7 @@ stages:
               secureFile: 'codesign_key.asc'
 
           - task: InstallAppleCertificate@2
+            condition: eq( variables['Agent.OS'], 'Darwin' )
             inputs:
               certSecureFile: 'SubstratumServicesCertificates.p12'
               certPwd: $(PASSPHRASE)
