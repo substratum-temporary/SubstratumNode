@@ -55,8 +55,8 @@ The following are items to check when setting up the build pipeline for the rele
 * The BUILD_RELEASE_ARTIFACTS variable has been added to the pipeline with value equal to
  ``false``. Not strictly required, but it does make life easier when triggering release builds
  from the UI.
-* All the required secrets have been added to the pipeline's Variables and their values ar
- marked as secret. 
+* All the required secret variables have been added to the pipeline's Variables with their values
+marked as secret.
 * All the digital signatures used for code signing have been added to the pipeline's
 Secure Files under Library.
 
