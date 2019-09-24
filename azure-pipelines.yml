@@ -2,6 +2,9 @@
 # test push to master
 
 trigger:
+  branches:
+    include:
+      - master
   tags:
     include:
       - v*
