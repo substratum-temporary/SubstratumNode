@@ -10,8 +10,9 @@ To produce release artifacts, you can re-trigger a successful build by modifying
  the build to skip to the Release stage and produce an artifact which you can then pass
  into the release pipeline.
 
-Then when you're ready to distribute the release artifacts from Azure. You can follow the
-steps below:
+### Distribute Release Artifacts
+
+Suggested steps to follow when you're ready to distribute the release artifacts:
 
 1. Verify the build pipeline has built the artifacts for the release target.
 2. Go to Releases, select the release pipeline and edit the value for ``TAG_NAME`` under
@@ -20,6 +21,44 @@ steps below:
 3. Go to Create Release.
 4. Under Artifacts, select the build artifact for the release.
 5. Click Create.
+6. Verify the release pipeline completed successfully.
+
+And you're done! You should see the new release artifacts deployed to our S3 bucket.
+
+### Configure Release Pipeline
+
+Release Pipelines are created/configured from the UI. To create a new one, go to Releases to 
+create a new pipeline and start editing.
+
+The following are items to check when setting up the release pipeline:
+
+* Agent OS is Ubuntu
+* Bash task should have our ci/prepare_release.sh script inlined (should not include shebang)
+  and setup to exit on standard error under Advanced.
+  * Add required variable mapping under Environment Variables of task:
+    * ``WORKSPACE = $(System.DefaultWorkingDirectory)``
+    * ``ARTIFACT_STAGING_DIR = $(System.DefaultWorkingDirectory)/$(Release.PrimaryArtifactSourceAlias)``
+* TAG_NAME is defined as pipeline variable. This used by the Prepare Release script.
+* AWS Tools for Microsoft Visual Studio Team Services is installed.
+* Deploy stage contains S3 Upload task and is setup with the following items:
+    * AWS credentials
+    * AWS Region = ``us-east-2``
+    * Bucket Name = ``substratum-website-downloads``
+    * Source Folder = ``s3-dist``
+    * Target Folder = ``$(TAG)``
+    * ACL = ``public read``
+
+### Configure Build Pipeline
+
+The following are items to check when setting up the build pipeline for the release stage:
+
+* The BUILD_RELEASE_ARTIFACTS variable has been added to the pipeline with value equal to
+ ``false``. Not strictly required, but it does make life easier when triggering release builds
+ from the UI.
+* All the required secrets have been added to the pipeline's Variables and their values ar
+ marked as secret. 
+* All the digital signatures used for code signing have been added to the pipeline's
+Secure Files under Library.
 
 ### Signing Release Artifacts
 
