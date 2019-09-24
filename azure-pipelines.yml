@@ -12,7 +12,7 @@ variables:
 stages:
   - stage: Testing
     displayName: "Testing"
-    condition: ne(variables.CUT_RELEASE_BINARIES, 'true')
+    condition: ne(variables.BUILD_RELEASE_ARTIFACTS, 'true')
     jobs:
       - job: Tests
         strategy:
@@ -85,7 +85,7 @@ stages:
 
   - stage: Release
     displayName: "Release"
-    condition: eq(variables.CUT_RELEASE_BINARIES, 'true')
+    condition: eq(variables.BUILD_RELEASE_ARTIFACTS, 'true')
 
     jobs:
       - job: BuildArtifact
@@ -156,5 +156,5 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              artifactName: 'SubstratumNode-$(Build.BuildID)'
+              artifactName: 'SubstratumNode-Build-$(Build.BuildNumber)'
               pathToPublish: $(Build.ArtifactStagingDirectory)
