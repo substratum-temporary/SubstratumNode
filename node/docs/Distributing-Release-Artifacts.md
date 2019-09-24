@@ -1,9 +1,24 @@
-# Cutting Release Binaries
+# Distributing Release Artifacts
 ## Overview
 
-To facilitate cutting new release binaries for SubstratumNode we have setup a multi-stage
-Azure Pipeline. The Release stage has to be manually triggered to build and publish the
-release binaries for Linux, Mac, and Windows platforms.
+Our current configuration of Azure Pipelines involves a multi-stage build pipeline and a
+release pipeline. The multi-stage pipeline consists of two stages; Testing and Release.
+
+To produce release artifacts, you can re-trigger a successful build by modifying the
+``BUILD_RELEASE_ARTIFACTS`` pipeline variable value to equal ``true``. This will cause
+ the build to skip to the Release stage and produce an artifact which you can then pass
+ in to the release pipeline.
+
+Then when you're ready to distribute the release artifacts from Azure. You can follow the steps
+below:
+
+1. Verify the build pipeline has built the artifacts for the release target.
+2. Go to Releases, select the release pipeline and edit the value for ``TAG_NAME`` under
+ Variables to match the target release version (for consistency this value should match the
+ release tag in the repository e.g. ``v1.0.0-rc3``).
+3. Go to Create Release.
+4. Under Artifacts, select the build artifact for the release.
+5. Click Create.
 
 ### Windows
 
