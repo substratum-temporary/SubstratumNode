@@ -1,4 +1,5 @@
 # Distributing Release Artifacts
+
 ## Overview
 
 Our current configuration of Azure Pipelines involves a multi-stage build pipeline and a
@@ -7,10 +8,10 @@ release pipeline. The multi-stage pipeline consists of two stages; Testing and R
 To produce release artifacts, you can re-trigger a successful build by modifying the
 ``BUILD_RELEASE_ARTIFACTS`` pipeline variable value to equal ``true``. This will cause
  the build to skip to the Release stage and produce an artifact which you can then pass
- in to the release pipeline.
+ into the release pipeline.
 
-Then when you're ready to distribute the release artifacts from Azure. You can follow the steps
-below:
+Then when you're ready to distribute the release artifacts from Azure. You can follow the
+steps below:
 
 1. Verify the build pipeline has built the artifacts for the release target.
 2. Go to Releases, select the release pipeline and edit the value for ``TAG_NAME`` under
@@ -20,12 +21,18 @@ below:
 4. Under Artifacts, select the build artifact for the release.
 5. Click Create.
 
-### Windows
+### Signing Release Artifacts
+
+For each platform we digitally sign the release artifacts as part of the release stage in the
+azure build pipeline. It is generally a straight-forward process. However, if the build failed
+during the signing process, then you may find some helpful information here.
+
+#### Windows
 
 We use AzureSignTool for signing our Windows release binaries. This requires access to
 Azure Key Vault where the code signing certificate is stored.
 
-#### Guide to Setup AzureSignTool with Azure Key Vault
+##### Guide to Setup AzureSignTool with Azure Key Vault
 
 These steps assume you already have an account with Azure Key Vault and that you are
 signed into the Azure portal.
@@ -50,12 +57,12 @@ signed into the Azure portal.
         be nothing before lines starting with ``-----BEGIN`` and nothing after lines
         starting with ``-----END``.
         
-Finally, in order to sign-in with AzureSignTool you will need the following credentials that
-were previously setup from the steps above:
-* Azure key vault client URL
-* Azure key vault client ID (Application ID)
-* Azure key vault secret (Application secret)
-* Azure key vault name of the certificate
+Finally, in order to sign in to Azure Key Vault with the AzureSignTool you will need the
+following credentials that were previously setup from the steps above:
+* Client URL
+* Client ID (Application ID)
+* Client secret (Application secret)
+* Name of the certificate
 
 Here's an example:
 ````
