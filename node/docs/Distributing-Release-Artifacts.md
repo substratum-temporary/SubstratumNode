@@ -45,7 +45,7 @@ The following are items to check when setting up the release pipeline:
     * AWS Region = ``us-east-2``
     * Bucket Name = ``substratum-website-downloads``
     * Source Folder = ``s3-dist``
-    * Target Folder = ``$(TAG)``
+    * Target Folder = ``$(TAG_NAME)``
     * ACL = ``public read``
 
 ### Configure Build Pipeline
