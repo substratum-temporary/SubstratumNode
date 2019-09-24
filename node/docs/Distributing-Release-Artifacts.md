@@ -33,12 +33,12 @@ create a new pipeline and start editing.
 The following are items to check when setting up the release pipeline:
 
 * Agent OS is Ubuntu
-* Bash task should have our ci/prepare_release.sh script inlined (should not include shebang)
+* Bash task should have our ``ci/prepare_release.sh`` script inlined (should not include shebang)
   and setup to exit on standard error under Advanced.
   * Add required variable mapping under Environment Variables of task:
     * ``WORKSPACE = $(System.DefaultWorkingDirectory)``
     * ``ARTIFACT_STAGING_DIR = $(System.DefaultWorkingDirectory)/$(Release.PrimaryArtifactSourceAlias)``
-* TAG_NAME is defined as pipeline variable. This used by the Prepare Release script.
+* ``TAG_NAME`` is defined as pipeline variable. This used by the Prepare Release script.
 * AWS Tools for Microsoft Visual Studio Team Services is installed.
 * Deploy stage contains S3 Upload task and is setup with the following items:
     * AWS credentials
@@ -52,7 +52,7 @@ The following are items to check when setting up the release pipeline:
 
 The following are items to check when setting up the build pipeline for the release stage:
 
-* The BUILD_RELEASE_ARTIFACTS variable has been added to the pipeline with value equal to
+* The ``BUILD_RELEASE_ARTIFACTS`` variable has been added to the pipeline with value equal to
  ``false``. Not strictly required, but it does make life easier when triggering release builds
  from the UI.
 * All the required secret variables have been added to the pipeline's Variables with their values
