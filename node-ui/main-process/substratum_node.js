@@ -44,6 +44,10 @@ module.exports = (() => {
   }
 
   function handleCommandResult (error, stdout, stderr) {
+console.log ("*** HANDLE_COMMAND_RESULT CALLED ***");
+console.log ("error: ", error);
+console.log ("stdout: ", stdout);
+console.log ("stderr: ", stderr);
     if (error) {
       process.send('Command returned error: ' + error.message)
     } else if (stderr) {

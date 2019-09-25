@@ -12,31 +12,29 @@ function sudo_ask() {
 	esac
 }
 
-function node_ui_logs_windows() {
-    mkdir -p generated/node-ui/AppData/Local/Substratum
-    mkdir -p generated/node-ui/AppData/Roaming/SubstratumNode
-    mkdir -p generated/node-ui/AppData/Roaming/Electron
-    cp -R "$HOME/AppData/Local/Substratum" generated/node-ui/AppData/Local/Substratum || echo "No logs from SubstratumNode"
-    cp -R "$HOME/AppData/Roaming/SubstratumNode/logs" generated/node-ui/AppData/Roaming/SubstratumNode || echo "No Electron SubstratumNode logs"
-    cp "$HOME/AppData/Roaming/SubstratumNode/log.log" generated/node-ui/AppData/Roaming/SubstratumNode || echo "No Electron SubstratumNode log"
-    cp -R "$HOME/AppData/Roaming/Electron/logs" generated/node-ui/AppData/Roaming/Electron || echo "No Electron logs"
-    cp -R "$HOME/AppData/Roaming/jasmine" generated/node-ui/AppData/Roaming/jasmine || echo "No jasmine logs"
+function node_ui_logs_specific() {
+    LOCAL="$1"
+    ROAMING="$2"
+    mkdir -p "generated/node-ui/$LOCAL/Substratum"
+    mkdir -p "generated/node-ui/$ROAMING/SubstratumNode"
+    mkdir -p "generated/node-ui/$ROAMING/Electron"
+    cp -R "$HOME/$LOCAL/Substratum" "generated/node-ui/$LOCAL/Substratum" || echo "No logs from SubstratumNode"
+    cp -R "$HOME/$ROAMING/SubstratumNode/logs" "generated/node-ui/$ROAMING/SubstratumNode" || echo "No Electron SubstratumNode logs"
+    cp "$HOME/$ROAMING/SubstratumNode/log.log" "generated/node-ui/$ROAMING/SubstratumNode" || echo "No Electron SubstratumNode log"
+    cp -R "$HOME/$ROAMING/Electron/logs" "generated/node-ui/$ROAMING/Electron" || echo "No Electron logs"
+    cp -R "$HOME/$ROAMING/jasmine" "generated/node-ui/$ROAMING/jasmine" || echo "No jasmine logs"
 }
 
-function node_ui_logs_linux_macOS() {
-    echo "Nothing yet...on the way..."
-}
-
-function node_ui_logs() {
+function node_ui_logs_generic() {
     case "$OSTYPE" in
       msys)
-        node_ui_logs_windows
+        node_ui_logs_specific "AppData/Local" "AppData/Roaming"
         ;;
       Darwin | darwin*)
-        node_ui_logs_linux_macOS
+        echo "Nothing yet...on the way..."
         ;;
       linux*)
-        node_ui_logs_linux_macOS
+        echo "Nothing yet...on the way..."
         ;;
       *)
         echo "Unrecognized operating system $OSTYPE"
@@ -54,6 +52,6 @@ cp -R ../dns_utility/generated generated/dns_utility || echo "No results from dn
 cp -R ../multinode_integration_tests/generated generated/multinode_integration_tests || echo "No results from multinode integration tests"
 cp -R ../node-ui/generated generated/node-ui || echo "No results from SubstratumNode UI"
 cp -R ../node-ui/dist generated/dist || echo "No distributable binaries"
-node_ui_logs
+node_ui_logs_generic
 sudo_ask tar -czvf generated.tar.gz generated/*
 popd
