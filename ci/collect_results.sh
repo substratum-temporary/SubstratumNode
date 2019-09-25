@@ -20,6 +20,7 @@ function node_ui_logs_windows() {
     cp -R "$HOME/AppData/Roaming/SubstratumNode/logs" generated/node-ui/AppData/Roaming/SubstratumNode || echo "No Electron SubstratumNode logs"
     cp "$HOME/AppData/Roaming/SubstratumNode/log.log" generated/node-ui/AppData/Roaming/SubstratumNode || echo "No Electron SubstratumNode log"
     cp -R "$HOME/AppData/Roaming/Electron/logs" generated/node-ui/AppData/Roaming/Electron || echo "No Electron logs"
+    cp -R "$HOME/AppData/Roaming/jasmine" generated/node-ui/AppData/Roaming/jasmine || echo "No jasmine logs"
 }
 
 function node_ui_logs_linux_macOS() {
