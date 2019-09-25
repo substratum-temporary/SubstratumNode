@@ -64,10 +64,10 @@ case "$OSTYPE" in
       codesign -v -v "target/release/$DNS_EXECUTABLE"
       ;;
    msys)
-		  if [[ "$AZURE_KEY_VAULT_CLIENT_SECRET" == "" ]]; then
-				echo "AZURE_KEY_VAULT_CLIENT_SECRET cannot be blank"
-				exit 1
-			fi
+      if [[ "$AZURE_KEY_VAULT_CLIENT_SECRET" == "" ]]; then
+        echo "AZURE_KEY_VAULT_CLIENT_SECRET cannot be blank"
+        exit 1
+      fi
       cd "$CI_DIR/../node"
       azure_key_vault_sign "target/release/$NODE_EXECUTABLE"
       azure_key_vault_sign "target/release/$NODE_EXECUTABLEW"
