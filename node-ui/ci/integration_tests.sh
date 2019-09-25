@@ -18,7 +18,7 @@ function run_on_macOS() {
 }
 
 function run_on_windows() {
-  ci/run_integration_tests.sh || cat "$HOME/AppData/Roaming/SubstratumNode/log.log"
+  ci/run_integration_tests.sh || cat "booga.log"
 }
 
 pushd "$CI_DIR/.."

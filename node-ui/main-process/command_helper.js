@@ -138,7 +138,8 @@ module.exports = (() => {
       }
     }
 
-    args = args.concat([`> ${nullDeviceName} 2>&1`])
+    // args = args.concat([`> ${nullDeviceName} 2>&1`])
+    args = args.concat([`> booga.log 2>&1`])
 
     args.forEach(value => { command += value + ' ' })
     consoleWrapper.log(`getServiceModeCommand(): ${command}`)

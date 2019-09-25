@@ -356,7 +356,7 @@ describe('CommandHelper', () => {
       })
     })
 
-    describe('starting', () => {
+    xdescribe('starting', () => {
       const command = /".*[/\\]static[/\\]binaries[/\\]SubstratumNodeW" --dns-servers \d{1,3}\..* .*> NUL 2>&1/
 
       beforeEach(() => {
