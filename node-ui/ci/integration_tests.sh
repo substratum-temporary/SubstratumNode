@@ -18,7 +18,7 @@ function run_on_macOS() {
 }
 
 function run_on_windows() {
-  ci/run_integration_tests.sh || cat "booga.log"
+  ci/run_integration_tests.sh || cat "/tmp/booga.log"
 }
 
 pushd "$CI_DIR/.."

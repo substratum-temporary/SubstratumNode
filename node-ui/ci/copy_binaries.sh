@@ -23,7 +23,7 @@ if [[ "$OSTYPE" == "msys" ]]; then
 fi
 
 # verify Windows binaries can execute
-if [[ "$OS_TYPE" == "msys" ]]; then
+if [[ "$OSTYPE" == "msys" ]]; then
   ls -l "$CI_DIR/../src/static/binaries/$NODE_EXECUTABLEW"
   "$CI_DIR/../src/static/binaries/$NODE_EXECUTABLEW" --help || wevtutil query-events Application /rd:true /count:100 /format:text
 
