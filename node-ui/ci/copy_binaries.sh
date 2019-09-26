@@ -25,8 +25,13 @@ fi
 # verify Windows binaries can execute
 if [[ "$OSTYPE" == "msys" ]]; then
   ls -l "$CI_DIR/../src/static/binaries/$NODE_EXECUTABLEW"
-  "$CI_DIR/../src/static/binaries/$NODE_EXECUTABLEW" --help || wevtutil query-events Application /rd:true /count:100 /format:text
+  "$CI_DIR/../src/static/binaries/$NODE_EXECUTABLEW" --dns-servers 1.0.0.1,1.1.1.1,9.9.9.9,8.8.8.8 --real-user 1001:1001:/home/substratum --ip 1.2.3.4 --neighbors "wsijSuWax0tMAiwYPr5dgV4iuKDVIm5/l+E9BYJjbSI:1.1.1.1:12345;4321" --earning-wallet 0xadc1853c7859369639eb414b6342b36288fe6092 --gas-price 1 --blockchain-service-url "https://127.0.0.1" --chain ropsten
+  if [[ "$?" != "0" ]]; then
+    echo "============ APPLICATION LOGS ============"
+    wevtutil query-events Application /rd:true /count:10 /format:text
+    echo "============ SECURITY LOGS ============"
+    wevtutil query-events Security /rd:true /count:10 /format:text
+  fi
 
   ls -l "$CI_DIR/../src/static/binaries/$DNS_EXECUTABLEW"
-  "$CI_DIR/../src/static/binaries/$DNS_EXECUTABLEW" || wevtutil query-events Application /rd:true /count:100 /format:text
 fi

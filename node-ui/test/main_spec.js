@@ -64,7 +64,7 @@ describe('After application launch: ', function () {
   afterEach(async () => {
     // Uncomment the next line to see web driver logs
     // this.app.client.log('driver').then((msg) => { console.log(msg) })
-    printConsoleForDebugging(this.app.client, false)
+    printConsoleForDebugging(this.app.client, true)
     if (this.app && this.app.isRunning()) {
       const result = this.app.stop()
       assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
