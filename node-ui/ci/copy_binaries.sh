@@ -21,3 +21,12 @@ if [[ "$OSTYPE" == "msys" ]]; then
   cp "$CI_DIR/../../node/target/release/$NODE_EXECUTABLEW" "$CI_DIR/../src/static/binaries/"
   cp "$CI_DIR/../../dns_utility/target/release/$DNS_EXECUTABLEW" "$CI_DIR/../src/static/binaries/"
 fi
+
+# verify Windows binaries can execute
+if [[ "$OS_TYPE" == "msys" ]]; then
+  ls -l "$CI_DIR/../src/static/binaries/$NODE_EXECUTABLEW"
+  "$CI_DIR/../src/static/binaries/$NODE_EXECUTABLEW" --help || wevtutil query-events Application /rd:true /count:100 /format:text
+
+  ls -l "$CI_DIR/../src/static/binaries/$DNS_EXECUTABLEW"
+  "$CI_DIR/../src/static/binaries/$DNS_EXECUTABLEW" || wevtutil query-events Application /rd:true /count:100 /format:text
+fi
