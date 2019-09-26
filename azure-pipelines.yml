@@ -131,12 +131,12 @@ stages:
             condition: eq( variables['Agent.OS'], 'Linux' )
             displayName: "Download digital signature for Linux"
             inputs:
-              secureFile: 'codesign_key.asc'
+              secureFile: 'linux_codesign_key.asc'
 
           - task: InstallAppleCertificate@2
             condition: eq( variables['Agent.OS'], 'Darwin' )
             inputs:
-              certSecureFile: 'SubstratumServicesCertificates.p12'
+              certSecureFile: 'macOs-SubstratumServicesCertificates.p12'
               certPwd: $(PASSPHRASE)
               keychainPassword: $(PASSPHRASE)
 

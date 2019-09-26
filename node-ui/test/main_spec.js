@@ -26,9 +26,6 @@ describe('After application launch: ', function () {
       '--headless',
       '--no-sandbox'
     ]
-    if (process.platform === 'win32') {
-      chromeDriverArguments.push('--disable-gpu')
-    }
     this.app = new Application({
       // Your electron path can be any binary
       // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
@@ -65,8 +62,9 @@ describe('After application launch: ', function () {
   })
 
   afterEach(async () => {
-    //this.app.client.log('driver').then((msg) => { console.log(msg) })
-    printConsoleForDebugging(this.app.client, true)
+    // Uncomment the next line to see web driver logs
+    // this.app.client.log('driver').then((msg) => { console.log(msg) })
+    printConsoleForDebugging(this.app.client, false)
     if (this.app && this.app.isRunning()) {
       const result = this.app.stop()
       assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
@@ -199,7 +197,7 @@ describe('After application launch: ', function () {
     await client.waitUntil(() => configComponent.saveConfig.isEnabled())
     client.element('#save-config').click()
 
-    assert.strictEqual(await uiInterface.verifyNodeUp(15000), true)
+    assert.strictEqual(await uiInterface.verifyNodeUp(10000), true)
 
     await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Serving'), 5000,
       'Timed out waiting for Node Status to switch to \'Serving\'')
@@ -213,7 +211,8 @@ describe('After application launch: ', function () {
 
     await indexPage.serving.click()
 
-    await client.waitUntilWindowLoaded()
+    assert.strictEqual(await uiInterface.verifyNodeUp(10000), true)
+
     await client.waitUntil(async () => (await client.getText('#node-status-label') === 'Serving'), 5000,
       'Timed out waiting for Node Status to switch to \'Serving\' after switching to \'Off\'')
     assert.strictEqual(await uiInterface.verifyNodeUp(10000), true)

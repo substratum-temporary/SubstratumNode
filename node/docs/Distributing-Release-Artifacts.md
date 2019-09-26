@@ -17,7 +17,7 @@ Suggested steps to follow when you're ready to distribute the release artifacts:
 1. Verify the build pipeline has built the artifacts for the release target.
 2. Go to Releases, select the release pipeline and edit the value for ``TAG_NAME`` under
  Variables to match the target release version (for consistency this value should match the
- release tag in the repository e.g. ``v1.0.0-rc3``).
+ release tag in the repository e.g. ``v1.0.0-rc.3``).
 3. Go to Create Release.
 4. Under Artifacts, select the build artifact for the release.
 5. Click Create.
