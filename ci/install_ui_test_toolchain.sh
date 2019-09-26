@@ -16,7 +16,7 @@ function install_macOS() {
 
 function install_windows() {
   # Stimulate a build
-  choco install googlechrome
+  choco install -y googlechrome
 }
 
 case "$OSTYPE" in
