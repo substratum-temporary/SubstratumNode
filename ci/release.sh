@@ -55,19 +55,17 @@ case "$OSTYPE" in
    darwin*)
       security unlock-keychain -p "$PASSPHRASE"
       cd "$CI_DIR/../node"
-      cp Info.plist target/release
-      codesign -s 'Developer ID Application: Substratum Services, Inc. (TKDGR66924)'  -fv "target/release/$NODE_EXECUTABLE"
+      codesign -s 'Developer ID Application: Substratum Services, Inc. (TKDGR66924)' -i 'net.substratum.substratumnode' -fv "target/release/$NODE_EXECUTABLE"
       codesign -v -v "target/release/$NODE_EXECUTABLE"
       cd "$CI_DIR/../dns_utility"
-      cp Info.plist target/release
-      codesign -s 'Developer ID Application: Substratum Services, Inc. (TKDGR66924)'  -fv "target/release/$DNS_EXECUTABLE"
+      codesign -s 'Developer ID Application: Substratum Services, Inc. (TKDGR66924)' -i 'net.substratum.dns-utility' -fv "target/release/$DNS_EXECUTABLE"
       codesign -v -v "target/release/$DNS_EXECUTABLE"
       ;;
    msys)
-		  if [[ "$AZURE_KEY_VAULT_CLIENT_SECRET" == "" ]]; then
-				echo "AZURE_KEY_VAULT_CLIENT_SECRET cannot be blank"
-				exit 1
-			fi
+      if [[ "$AZURE_KEY_VAULT_CLIENT_SECRET" == "" ]]; then
+        echo "AZURE_KEY_VAULT_CLIENT_SECRET cannot be blank"
+        exit 1
+      fi
       cd "$CI_DIR/../node"
       azure_key_vault_sign "target/release/$NODE_EXECUTABLE"
       azure_key_vault_sign "target/release/$NODE_EXECUTABLEW"
