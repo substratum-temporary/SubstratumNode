@@ -15,8 +15,7 @@ function install_macOS() {
 }
 
 function install_windows() {
-  # Stimulate a build
-  choco install -y googlechrome
+  choco upgrade -y googlechrome || echo "Ignoring required reboot."
 }
 
 case "$OSTYPE" in
