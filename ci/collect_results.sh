@@ -14,15 +14,18 @@ function sudo_ask() {
 
 function node_ui_logs_specific() {
     LOCAL="$1"
-    ROAMING="$2"
+    LOGS_DIR="$2"
     mkdir -p "generated/node-ui/$LOCAL/Substratum"
-    mkdir -p "generated/node-ui/$ROAMING/SubstratumNode"
-    mkdir -p "generated/node-ui/$ROAMING/Electron"
     cp -R "$HOME/$LOCAL/Substratum" "generated/node-ui/$LOCAL/Substratum" || echo "No logs from SubstratumNode"
-    cp -R "$HOME/$ROAMING/SubstratumNode/logs" "generated/node-ui/$ROAMING/SubstratumNode" || echo "No Electron SubstratumNode logs"
-    cp "$HOME/$ROAMING/SubstratumNode/log.log" "generated/node-ui/$ROAMING/SubstratumNode" || echo "No Electron SubstratumNode log"
-    cp -R "$HOME/$ROAMING/Electron/logs" "generated/node-ui/$ROAMING/Electron" || echo "No Electron logs"
-    cp -R "$HOME/$ROAMING/jasmine" "generated/node-ui/$ROAMING/jasmine" || echo "No jasmine logs"
+
+    if [[ "$LOGS_DIR" != "" ]]; then
+      mkdir -p "generated/node-ui/$LOGS_DIR/SubstratumNode"
+      mkdir -p "generated/node-ui/$LOGS_DIR/Electron"
+      cp -R "$HOME/$LOGS_DIR/SubstratumNode/logs" "generated/node-ui/$LOGS_DIR/SubstratumNode" || echo "No Electron SubstratumNode logs"
+      cp "$HOME/$LOGS_DIR/SubstratumNode/log.log" "generated/node-ui/$LOGS_DIR/SubstratumNode" || echo "No Electron SubstratumNode log"
+      cp -R "$HOME/$LOGS_DIR/Electron/logs" "generated/node-ui/$LOGS_DIR/Electron" || echo "No Electron logs"
+      cp -R "$HOME/$LOGS_DIR/jasmine" "generated/node-ui/$LOGS_DIR/jasmine" || echo "No jasmine logs"
+    fi
 }
 
 function node_ui_logs_generic() {
@@ -31,7 +34,7 @@ function node_ui_logs_generic() {
         node_ui_logs_specific "AppData/Local" "AppData/Roaming"
         ;;
       Darwin | darwin*)
-        echo "Nothing yet...on the way..."
+        node_ui_logs_specific "Library/Application Support" "Library/Logs"
         ;;
       linux*)
         echo "Nothing yet...on the way..."
@@ -50,7 +53,7 @@ mkdir generated
 sudo_ask cp -R ../node/generated generated/node || echo "No results from SubstratumNode"
 cp -R ../dns_utility/generated generated/dns_utility || echo "No results from dns_utility"
 cp -R ../multinode_integration_tests/generated generated/multinode_integration_tests || echo "No results from multinode integration tests"
-cp -R ../node-ui/generated generated/node-ui || echo "No results from SubstratumNode UI"
+sudo_ask cp -R ../node-ui/generated generated/node-ui || echo "No results from SubstratumNode UI"
 cp -R ../node-ui/dist generated/dist || echo "No distributable binaries"
 node_ui_logs_generic
 sudo_ask tar -czvf generated.tar.gz generated/*
