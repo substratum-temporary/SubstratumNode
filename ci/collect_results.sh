@@ -2,14 +2,14 @@
 # Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 function sudo_ask() {
-	case "$OSTYPE" in
-		msys)
+  case "$OSTYPE" in
+    msys)
       "$@"
-			;;
-		Darwin | darwin* | linux*)
+      ;;
+    Darwin | darwin* | linux*)
       sudo "$@"
-			;;
-	esac
+      ;;
+  esac
 }
 
 function node_ui_logs_specific() {
