@@ -18,13 +18,7 @@ function run_on_macOS() {
 }
 
 function run_on_windows() {
-  if ! ci/run_integration_tests.sh; then
-    echo "============ APPLICATION LOGS ============"
-    wevtutil query-events Application /rd:true /count:10 /format:text
-    echo "============ SECURITY LOGS ============"
-    wevtutil query-events Security /rd:true /count:10 /format:text
-    exit 1
-  fi
+  ci/run_integration_tests.sh
 }
 
 pushd "$CI_DIR/.."

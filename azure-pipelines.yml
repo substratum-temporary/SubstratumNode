@@ -110,6 +110,7 @@ stages:
 
     jobs:
       - job: BuildArtifact
+        displayName: "BuildArtifact"
         condition: eq(variables.BUILD_RELEASE_ARTIFACTS, 'true')
         strategy:
           matrix:

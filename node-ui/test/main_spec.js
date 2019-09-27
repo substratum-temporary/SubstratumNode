@@ -26,7 +26,7 @@ describe('After application launch: ', function () {
     const chromeDriverArguments = [
       '--headless',
       '--no-sandbox',
-      '--ignore-gpu-blacklist'
+      '--ignore-gpu-blacklist' // said to help in restrictive build environments (e.g. Azure)
     ]
     this.app = new Application({
       // Your electron path can be any binary
@@ -66,10 +66,10 @@ describe('After application launch: ', function () {
   afterEach(async () => {
     // Uncomment the next line to see web driver logs
     // this.app.client.log('driver').then((msg) => { console.log(msg) })
-    printConsoleForDebugging(this.app.client, true)
+    printConsoleForDebugging(this.app.client, false)
     if (this.app && this.app.isRunning()) {
-      const imageFile = this.app.env.ELECTRON_USER_DATA + '/capturedPage.png'
-      console.log(`attempting to save screenshot to ${imageFile} ...`)
+      const imageFile = this.app.env.ELECTRON_USER_DATA + '/Screenshot.png'
+      console.log(`Saving screenshot to ${imageFile} ...`)
       this.app.browserWindow.capturePage().then((imageBuffer) => {
         try {
           fs.writeFileSync(imageFile, imageBuffer)
