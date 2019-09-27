@@ -107,11 +107,10 @@ stages:
 
   - stage: Release
     displayName: "Release"
+    condition: eq(variables.BUILD_RELEASE_ARTIFACTS, 'true')
 
     jobs:
       - job: BuildArtifact
-        displayName: "BuildArtifact"
-        condition: eq(variables.BUILD_RELEASE_ARTIFACTS, 'true')
         strategy:
           matrix:
             linux:
