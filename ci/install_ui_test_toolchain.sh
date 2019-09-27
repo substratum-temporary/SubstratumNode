@@ -15,7 +15,15 @@ function install_macOS() {
 }
 
 function install_windows() {
-  choco upgrade -y googlechrome || echo "Ignoring required reboot."
+  if ! choco upgrade -y googlechrome; then
+    EXIT_CODE="$?"
+    if [[ "$EXIT_CODE" -ge "350" ]]; then
+      echo "Upgrade failed possibly due to request to restart. Trying to continue anyways."
+    elif [[ "$EXIT_CODE" != "0" ]]; then
+      echo "Upgrade failed on basic error. Refusing to continue."
+      exit 1
+    fi
+  fi
 }
 
 case "$OSTYPE" in
