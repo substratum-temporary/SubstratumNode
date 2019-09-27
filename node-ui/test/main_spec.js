@@ -68,7 +68,7 @@ describe('After application launch: ', function () {
     // this.app.client.log('driver').then((msg) => { console.log(msg) })
     printConsoleForDebugging(this.app.client, true)
     if (this.app && this.app.isRunning()) {
-      let imageFile = this.app.env.ELECTRON_USER_DATA + '/capturedPage.png'
+      const imageFile = this.app.env.ELECTRON_USER_DATA + '/capturedPage.png'
       console.log(`attempting to save screenshot to ${imageFile} ...`)
       this.app.browserWindow.capturePage().then((imageBuffer) => {
         try {

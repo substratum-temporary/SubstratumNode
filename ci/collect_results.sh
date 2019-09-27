@@ -4,10 +4,10 @@ CI_DIR="$( cd "$( dirname "$0" )" && pwd )"
 function sudo_ask() {
 	case "$OSTYPE" in
 		msys)
-			"$@"
+      "$@"
 			;;
 		Darwin | darwin* | linux*)
-			sudo "$@"
+      sudo "$@"
 			;;
 	esac
 }

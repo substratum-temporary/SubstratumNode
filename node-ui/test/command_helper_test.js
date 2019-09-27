@@ -1,6 +1,6 @@
 // Copyright (c) 2017-2019, Substratum LLC (https://substratum.net) and/or its affiliates. All rights reserved.
 
-/* global describe beforeEach afterEach expect it spyOn xdescribe */
+/* global describe beforeEach afterEach expect it spyOn */
 
 const assert = require('assert')
 const path = require('path')
@@ -162,7 +162,7 @@ describe('CommandHelper', () => {
       })
     })
 
-    xdescribe('Linux', () => {
+    describe('Linux', () => {
       beforeEach(() => {
         process.argv = ['one', 'two', '/mock-home-dir']
 
@@ -199,7 +199,7 @@ describe('CommandHelper', () => {
       })
     })
 
-    xdescribe('MacOS', () => {
+    describe('MacOS', () => {
       beforeEach(() => {
         process.platform = 'darwin'
 
@@ -356,7 +356,7 @@ describe('CommandHelper', () => {
       })
     })
 
-    xdescribe('starting', () => {
+    describe('starting', () => {
       const command = /".*[/\\]static[/\\]binaries[/\\]SubstratumNodeW" --dns-servers \d{1,3}\..* .*> NUL 2>&1/
 
       beforeEach(() => {
