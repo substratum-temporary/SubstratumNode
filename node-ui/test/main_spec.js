@@ -3,6 +3,7 @@
 /* global jasmine describe beforeEach afterEach it */
 
 const assert = require('assert')
+const fs = require('fs')
 const path = require('path')
 const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
 const { Application } = require('spectron')
@@ -67,6 +68,17 @@ describe('After application launch: ', function () {
     // this.app.client.log('driver').then((msg) => { console.log(msg) })
     printConsoleForDebugging(this.app.client, true)
     if (this.app && this.app.isRunning()) {
+      let imageFile = this.app.env.ELECTRON_USER_DATA + '/capturedPage.png'
+      console.log(`attempting to save screenshot to ${imageFile} ...`)
+      this.app.browserWindow.capturePage().then((imageBuffer) => {
+        try {
+          fs.writeFileSync(imageFile, imageBuffer)
+        } catch (error) {
+          throw new Error(error)
+        }
+      }).catch((error) => {
+        console.log(`Failed to save screenshot to ${imageFile} because ${error.message}`)
+      })
       const result = this.app.stop()
       assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
       return result
