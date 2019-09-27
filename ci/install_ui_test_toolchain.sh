@@ -18,9 +18,10 @@ function install_windows() {
   if ! choco upgrade -y googlechrome; then
     EXIT_CODE="$?"
     if [[ "$EXIT_CODE" -ge "350" ]]; then
-      echo "Upgrade failed possibly due to request to restart. Trying to continue anyways."
+      echo "Upgrade failed possibly because the same version is already installed"
+      echo "or a restart was requested or both. Trying to continue anyways."
     elif [[ "$EXIT_CODE" != "0" ]]; then
-      echo "Upgrade failed on basic error. Refusing to continue."
+      echo "General installation failure. Refusing to continue."
       exit 1
     fi
   fi

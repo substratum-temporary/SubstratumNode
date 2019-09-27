@@ -18,7 +18,13 @@ function run_on_macOS() {
 }
 
 function run_on_windows() {
-  ci/run_integration_tests.sh || cat "/tmp/booga.log"
+  if ! ci/run_integration_tests.sh; then
+    echo "============ APPLICATION LOGS ============"
+    wevtutil query-events Application /rd:true /count:10 /format:text
+    echo "============ SECURITY LOGS ============"
+    wevtutil query-events Security /rd:true /count:10 /format:text
+    exit 1
+  fi
 }
 
 pushd "$CI_DIR/.."
