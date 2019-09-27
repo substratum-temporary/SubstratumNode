@@ -24,7 +24,8 @@ describe('After application launch: ', function () {
     testUtilities.purgeExistingState()
     const chromeDriverArguments = [
       '--headless',
-      '--no-sandbox'
+      '--no-sandbox',
+      '--ignore-gpu-blacklist'
     ]
     this.app = new Application({
       // Your electron path can be any binary

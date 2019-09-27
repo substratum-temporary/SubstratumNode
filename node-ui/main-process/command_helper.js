@@ -16,7 +16,7 @@ module.exports = (() => {
   const windowsRuntimeArgs = ['--dns-servers', '1.0.0.1,1.1.1.1,9.9.9.9,8.8.8.8']
   const unixRuntimeArgs = [...windowsRuntimeArgs, '--real-user', `${realUser()}`]
   let runtimeArgs
-  // let nullDeviceName
+  let nullDeviceName
 
   function realUser () {
     let uid
@@ -138,8 +138,7 @@ module.exports = (() => {
       }
     }
 
-    // args = args.concat([`> ${nullDeviceName} 2>&1`])
-    args = args.concat([`> /tmp/booga.log 2>&1`])
+    args = args.concat([`> ${nullDeviceName} 2>&1`])
 
     args.forEach(value => { command += value + ' ' })
     consoleWrapper.log(`getServiceModeCommand(): ${command}`)
@@ -219,12 +218,12 @@ module.exports = (() => {
 
   const binaryPath = getBinaryPath()
   if (process.platform === 'win32') {
-    // nullDeviceName = 'NUL'
+    nullDeviceName = 'NUL'
     startSubstratumNode = startNodeWindows
     stopSubstratumNode = stopNodeWindows
     runtimeArgs = windowsRuntimeArgs
   } else {
-    // nullDeviceName = '/dev/null'
+    nullDeviceName = '/dev/null'
     startSubstratumNode = startNodeUnix
     stopSubstratumNode = stopNodeUnix
     runtimeArgs = unixRuntimeArgs
