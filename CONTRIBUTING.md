@@ -256,11 +256,9 @@ on another issue!
 
 #### Rolling Your Own Pipelines Build
 
-You may create your own Pipelines Build and connect it to your forked clone of the SubstratumNode repository. This will allow you
-to create Pull Requests against your cloned version of master and watch your own pipelines build!
-
-This will allow you to keep developing against your pipeline build until you're ready to have an administrator open a Pull Request
-of your work back into the official repository.
+Setting up your own pipelines build allows you to create pull requests against your cloned repository and receive
+constant feedback from the pipelines build until you're ready to merge your work back upstream into the official
+repository.
 
 ##### Things You'll Need
 
