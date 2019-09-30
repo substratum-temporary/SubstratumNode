@@ -15,16 +15,9 @@ function install_macOS() {
 }
 
 function install_windows() {
-  if ! choco upgrade -y googlechrome; then
-    EXIT_CODE="$?"
-    if [[ "$EXIT_CODE" -ge "350" ]]; then
-      echo "Upgrade failed possibly because the same version is already installed"
-      echo "or a restart was requested or both. Trying to continue anyways."
-    elif [[ "$EXIT_CODE" != "0" ]]; then
-      echo "General installation failure. Refusing to continue."
-      exit 1
-    fi
-  fi
+  wmic product where "name like 'Google Chrome'" call uninstall //nointeractive || \
+    echo "No Google Chrome instance was found to uninstall"
+  choco install -y googlechrome
 }
 
 case "$OSTYPE" in
