@@ -21,9 +21,11 @@ function install_windows() {
   echo "Attempting to uninstall Google Chrome ..."
   cmd //c wmic product where "name like 'Google Chrome'" call uninstall //nointeractive
   echo "Attempting to install latest Google Chrome ..."
-  cmd //c choco install googlechrome -y || \
-    echo "Google Chrome failed to install... trying to continue anyways."
-  echo "Checking Google Chrome version ..."
+  # Unfortunately choco install googlechrome -y does not work
+   curl "https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7BD3E0CE1F-2634-7AEB-D15F-82C77C14A52F%7D%26lang%3Den%26browser%3D3%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dprefers%26ap%3Dx64-stable-statsdef_1%26installdataindex%3Dempty/chrome/install/ChromeStandaloneSetup64.exe" > "$TEMP/ChromeStandaloneSetup.exe"
+  cmd //C "echo.>%TEMP%\ChromeStandaloneSetup.exe:Zone.Identifier"
+  "$TEMP/ChromeStandaloneSetup.exe" //silent //install
+  echo "Checking Google Chrome version post install ..."
   cmd //c wmic product where "name like 'Google Chrome'" get version || \
     echo "No Google Chrome instance was found"
 }
