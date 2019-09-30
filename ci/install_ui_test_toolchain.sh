@@ -15,9 +15,21 @@ function install_macOS() {
 }
 
 function install_windows() {
+  echo "Checking Google Chrome version ..."
+  wmic product where "name like 'Google Chrome'" get version || \
+    echo "No Google Chrome instance was found"
+  echo "Attempting to uninstall Google Chrome ..."
   wmic product where "name like 'Google Chrome'" call uninstall //nointeractive || \
-    echo "No Google Chrome instance was found to uninstall"
-  choco install -y googlechrome
+    echo "No Google Chrome instance was found"
+  echo "Attempting to install latest Google Chrome ..."
+  if ! choco install -y googlechrome; then
+    echo "Google Chrome failed to install... trying to continue anyways."
+    echo "Dumping MSI install log out to console ..."
+    grep -B10 "Return Value 3" "$(cygpath -u "C:\Users\VssAdministrator\AppData\Local\Temp\chocolatey\GoogleChrome.77.0.3865.90.MsiInstall.log")"
+  fi
+  echo "Checking Google Chrome version ..."
+  wmic product where "name like 'Google Chrome'" get version || \
+    echo "No Google Chrome instance was found"
 }
 
 case "$OSTYPE" in
