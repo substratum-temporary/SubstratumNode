@@ -253,3 +253,21 @@ your changes through Pipelines, and when it's green, your reviewer will take ano
 
 Once your PR is approved, the reviewer will merge it into the public repo's `master` branch for you, and you can start
 on another issue!
+
+#### Rolling Your Own Pipelines Build
+
+Setting up your own pipelines build allows you to create pull requests against your cloned repository and receive
+constant feedback from the pipelines build until you're ready to merge your work back upstream into the official
+repository.
+
+##### Things You'll Need
+
+* An account on [Azure DevOps](https://dev.azure.com).
+* Clone of the [SubstratumNode repository](https://github.com/SubstratumNetwork/SubstratumNode).
+* Clone of the [SubstratumNode-results repositroy](https://substratum-temporary.github.io/SubstratumNode-results).
+* The Windows Application Driver extension for Azure Pipelines (this is required to run UI integration tests on Windows).
+* Additional configuration is required for publishing your results.
+    * Edit your Azure Pipelines and setup the following variables:
+        * ``GITHUB_TOKEN`` set to your GitHub Token. Please see GitHub instructions for how to set this up.
+        * ``RESULTS_REPO_NAME`` set to your GitHub repository name without the ``.git`` suffix.
+        * ``RESULTS_REPO_OWNER`` set to your GitHub repository user name.

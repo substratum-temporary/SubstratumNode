@@ -3,6 +3,7 @@
 /* global jasmine describe beforeEach afterEach it */
 
 const assert = require('assert')
+const fs = require('fs')
 const path = require('path')
 const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
 const { Application } = require('spectron')
@@ -17,14 +18,27 @@ describe('After application launch: ', function () {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000
   let configComponent
   let indexPage
+  let currentSpec
+
+  const specReporter = {
+    specStarted: function(result) {
+      currentSpec = result;
+    },
+    specDone: function(result) {
+      currentSpec = null;
+    }
+  }
+  jasmine.getEnv().addReporter(specReporter)
 
   beforeEach(async () => {
+    let currentSpecFolderName = currentSpec.description.replace(/ /g, "_").toLowerCase()
     assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
 
     testUtilities.purgeExistingState()
     const chromeDriverArguments = [
       '--headless',
-      '--no-sandbox'
+      '--no-sandbox',
+      '--ignore-gpu-blacklist' // said to help in restrictive build environments (e.g. Azure)
     ]
     this.app = new Application({
       // Your electron path can be any binary
@@ -34,7 +48,7 @@ describe('After application launch: ', function () {
 
       env: {
         TESTING_IN_PROGRESS: 'true',
-        ELECTRON_USER_DATA: `${process.cwd()}/generated/${process.hrtime.bigint()}/userData`
+        ELECTRON_USER_DATA: `${process.cwd()}/generated/${currentSpecFolderName}/${process.hrtime.bigint()}/userData`
       },
 
       // Assuming you have the following directory structure
@@ -66,6 +80,16 @@ describe('After application launch: ', function () {
     // this.app.client.log('driver').then((msg) => { console.log(msg) })
     printConsoleForDebugging(this.app.client, false)
     if (this.app && this.app.isRunning()) {
+      const imageFile = this.app.env.ELECTRON_USER_DATA + '/Screenshot.png'
+      this.app.browserWindow.capturePage().then((imageBuffer) => {
+        try {
+          fs.writeFileSync(imageFile, imageBuffer)
+        } catch (error) {
+          throw new Error(error)
+        }
+      }).catch((error) => {
+        console.log(`Failed to save screenshot to ${imageFile} because ${error.message}`)
+      })
       const result = this.app.stop()
       assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
       return result
