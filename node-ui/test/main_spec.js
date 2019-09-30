@@ -18,8 +18,20 @@ describe('After application launch: ', function () {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000
   let configComponent
   let indexPage
+  let currentSpec
+
+  const specReporter = {
+    specStarted: function(result) {
+      currentSpec = result;
+    },
+    specDone: function(result) {
+      currentSpec = null;
+    }
+  }
+  jasmine.getEnv().addReporter(specReporter)
 
   beforeEach(async () => {
+    let currentSpecFolderName = currentSpec.description.replace(/ /g, "_").toLowerCase()
     assert.strictEqual(await uiInterface.verifyNodeDown(1000), true)
 
     testUtilities.purgeExistingState()
@@ -36,7 +48,7 @@ describe('After application launch: ', function () {
 
       env: {
         TESTING_IN_PROGRESS: 'true',
-        ELECTRON_USER_DATA: `${process.cwd()}/generated/${process.hrtime.bigint()}/userData`
+        ELECTRON_USER_DATA: `${process.cwd()}/generated/${currentSpecFolderName}/${process.hrtime.bigint()}/userData`
       },
 
       // Assuming you have the following directory structure
@@ -69,7 +81,6 @@ describe('After application launch: ', function () {
     printConsoleForDebugging(this.app.client, false)
     if (this.app && this.app.isRunning()) {
       const imageFile = this.app.env.ELECTRON_USER_DATA + '/Screenshot.png'
-      console.log(`Saving screenshot to ${imageFile} ...`)
       this.app.browserWindow.capturePage().then((imageBuffer) => {
         try {
           fs.writeFileSync(imageFile, imageBuffer)
