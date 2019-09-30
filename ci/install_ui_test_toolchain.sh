@@ -16,18 +16,15 @@ function install_macOS() {
 
 function install_windows() {
   echo "Checking Google Chrome version ..."
-  wmic product where "name like 'Google Chrome'" get version || \
+  cmd //c wmic product where "name like 'Google Chrome'" get version || \
     echo "No Google Chrome instance was found"
   echo "Attempting to uninstall Google Chrome ..."
-  wmic product where "name like 'Google Chrome'" call uninstall //nointeractive || \
-    echo "No Google Chrome instance was found"
+  cmd //c wmic product where "name like 'Google Chrome'" call uninstall //nointeractive
   echo "Attempting to install latest Google Chrome ..."
-  choco install googlechrome -y --force --verbose || \
+  cmd //c choco install googlechrome -y || \
     echo "Google Chrome failed to install... trying to continue anyways."
-  echo "Dumping chocolatey install log out to console ..."
-  cat "$(cygpath -u "C:\ProgramData\chocolatey\logs\chocolatey.log")"
   echo "Checking Google Chrome version ..."
-  wmic product where "name like 'Google Chrome'" get version || \
+  cmd //c wmic product where "name like 'Google Chrome'" get version || \
     echo "No Google Chrome instance was found"
 }
 
